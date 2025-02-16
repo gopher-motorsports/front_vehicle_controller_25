@@ -49,8 +49,6 @@ extern "C" {
 
 /* USER CODE END EM */
 
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -59,74 +57,80 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define BRK_LT_Pin GPIO_PIN_13
-#define BRK_LT_GPIO_Port GPIOC
-#define BUZZER_Pin GPIO_PIN_15
-#define BUZZER_GPIO_Port GPIOC
-#define MCU_STATUS_LED_Pin GPIO_PIN_1
-#define MCU_STATUS_LED_GPIO_Port GPIOC
-#define GSENSE_LED_Pin GPIO_PIN_2
-#define GSENSE_LED_GPIO_Port GPIOC
-#define STATUS_B_Pin GPIO_PIN_3
-#define STATUS_B_GPIO_Port GPIOC
-#define STATUS_R_Pin GPIO_PIN_0
-#define STATUS_R_GPIO_Port GPIOA
-#define PUMP_OUTPUT_Pin GPIO_PIN_1
-#define PUMP_OUTPUT_GPIO_Port GPIOA
-#define STATUS_G_Pin GPIO_PIN_2
-#define STATUS_G_GPIO_Port GPIOA
-#define CURR_FAULT_5V_Pin GPIO_PIN_4
-#define CURR_FAULT_5V_GPIO_Port GPIOA
-#define DRS_PWM_Pin GPIO_PIN_5
-#define DRS_PWM_GPIO_Port GPIOA
-#define CURR_FAULT_3V3_Pin GPIO_PIN_6
-#define CURR_FAULT_3V3_GPIO_Port GPIOA
-#define PUMP_PRESS_Pin GPIO_PIN_7
-#define PUMP_PRESS_GPIO_Port GPIOA
-#define BRK_PRESS_IN_Pin GPIO_PIN_4
-#define BRK_PRESS_IN_GPIO_Port GPIOC
-#define TS_SNS_Pin GPIO_PIN_5
-#define TS_SNS_GPIO_Port GPIOC
-#define APPS2_Pin GPIO_PIN_0
-#define APPS2_GPIO_Port GPIOB
-#define APPS1_Pin GPIO_PIN_1
-#define APPS1_GPIO_Port GPIOB
-#define RTD_BUTTON_Pin GPIO_PIN_10
-#define RTD_BUTTON_GPIO_Port GPIOB
-#define CANRX2_Pin GPIO_PIN_12
-#define CANRX2_GPIO_Port GPIOB
+#define Sen_5V_Fault_1_Pin GPIO_PIN_13
+#define Sen_5V_Fault_1_GPIO_Port GPIOC
+#define APPS2_VCC_Fault_Pin GPIO_PIN_14
+#define APPS2_VCC_Fault_GPIO_Port GPIOC
+#define APPS1_VCC_Fault_Pin GPIO_PIN_15
+#define APPS1_VCC_Fault_GPIO_Port GPIOC
+#define VoltSen5V_1_Pin GPIO_PIN_0
+#define VoltSen5V_1_GPIO_Port GPIOC
+#define VoltSen5V_2_Pin GPIO_PIN_1
+#define VoltSen5V_2_GPIO_Port GPIOC
+#define VoltSen5V_3_Pin GPIO_PIN_2
+#define VoltSen5V_3_GPIO_Port GPIOC
+#define VoltSen5V_4_Pin GPIO_PIN_3
+#define VoltSen5V_4_GPIO_Port GPIOC
+#define SpeedSen1_Pin GPIO_PIN_0
+#define SpeedSen1_GPIO_Port GPIOA
+#define SpeedSen2_Pin GPIO_PIN_1
+#define SpeedSen2_GPIO_Port GPIOA
+#define SpeedSen3_Pin GPIO_PIN_2
+#define SpeedSen3_GPIO_Port GPIOA
+#define VoltSen5V_5_Pin GPIO_PIN_3
+#define VoltSen5V_5_GPIO_Port GPIOA
+#define VoltSen5V_6_Pin GPIO_PIN_4
+#define VoltSen5V_6_GPIO_Port GPIOA
+#define APPS1_Pin GPIO_PIN_5
+#define APPS1_GPIO_Port GPIOA
+#define APPS2_Pin GPIO_PIN_6
+#define APPS2_GPIO_Port GPIOA
+#define RideHeight_Pin GPIO_PIN_7
+#define RideHeight_GPIO_Port GPIOA
+#define SalenKey_Pin GPIO_PIN_4
+#define SalenKey_GPIO_Port GPIOC
+#define AVoltSen5V_1_Pin GPIO_PIN_5
+#define AVoltSen5V_1_GPIO_Port GPIOC
+#define AVoltSen5V_2_Pin GPIO_PIN_0
+#define AVoltSen5V_2_GPIO_Port GPIOB
+#define AVoltSen5V_3_Pin GPIO_PIN_1
+#define AVoltSen5V_3_GPIO_Port GPIOB
+#define Pull_up_1_Pin GPIO_PIN_2
+#define Pull_up_1_GPIO_Port GPIOB
+#define Pull_up_2_Pin GPIO_PIN_10
+#define Pull_up_2_GPIO_Port GPIOB
 #define CANTX2_Pin GPIO_PIN_13
 #define CANTX2_GPIO_Port GPIOB
-#define RAD_FAN_Pin GPIO_PIN_14
-#define RAD_FAN_GPIO_Port GPIOB
-#define BSPD_TS_SNS_FAULT_Pin GPIO_PIN_15
-#define BSPD_TS_SNS_FAULT_GPIO_Port GPIOB
-#define BSPD_BRK_FAULT_Pin GPIO_PIN_6
-#define BSPD_BRK_FAULT_GPIO_Port GPIOC
-#define BSPD_TS_BRK_FAULT_Pin GPIO_PIN_7
-#define BSPD_TS_BRK_FAULT_GPIO_Port GPIOC
+#define Pull_up_3_Pin GPIO_PIN_14
+#define Pull_up_3_GPIO_Port GPIOB
+#define SDC2_MCU_Pin GPIO_PIN_8
+#define SDC2_MCU_GPIO_Port GPIOA
+#define SDC1_MCU_Pin GPIO_PIN_9
+#define SDC1_MCU_GPIO_Port GPIOA
 #define SWDIO_Pin GPIO_PIN_13
 #define SWDIO_GPIO_Port GPIOA
 #define SWCLK_Pin GPIO_PIN_14
 #define SWCLK_GPIO_Port GPIOA
 #define HARDFAULT_LED_Pin GPIO_PIN_15
 #define HARDFAULT_LED_GPIO_Port GPIOA
-#define MCU_AUX_2_Pin GPIO_PIN_12
-#define MCU_AUX_2_GPIO_Port GPIOC
-#define MCU_AUX_1_Pin GPIO_PIN_2
-#define MCU_AUX_1_GPIO_Port GPIOD
-#define AUX_GPIO_2_Pin GPIO_PIN_4
-#define AUX_GPIO_2_GPIO_Port GPIOB
-#define AUX_GPIO_1_Pin GPIO_PIN_5
-#define AUX_GPIO_1_GPIO_Port GPIOB
+#define VecNav_TX_Pin GPIO_PIN_10
+#define VecNav_TX_GPIO_Port GPIOC
+#define VecNav_RX_Pin GPIO_PIN_11
+#define VecNav_RX_GPIO_Port GPIOC
+#define Gsense_Pin GPIO_PIN_12
+#define Gsense_GPIO_Port GPIOC
+#define HBeat_Pin GPIO_PIN_2
+#define HBeat_GPIO_Port GPIOD
+#define Fault_12V_LED_Pin GPIO_PIN_4
+#define Fault_12V_LED_GPIO_Port GPIOB
 #define USART_TX_Pin GPIO_PIN_6
 #define USART_TX_GPIO_Port GPIOB
 #define USART_RX_Pin GPIO_PIN_7
 #define USART_RX_GPIO_Port GPIOB
-#define CAN_RX1_Pin GPIO_PIN_8
-#define CAN_RX1_GPIO_Port GPIOB
-#define CAN_TX1_Pin GPIO_PIN_9
-#define CAN_TX1_GPIO_Port GPIOB
+#define Sen_12V_Fault_Pin GPIO_PIN_8
+#define Sen_12V_Fault_GPIO_Port GPIOB
+#define Sen_5V_Fault_2_Pin GPIO_PIN_9
+#define Sen_5V_Fault_2_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

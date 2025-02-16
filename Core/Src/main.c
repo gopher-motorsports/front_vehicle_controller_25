@@ -17,7 +17,6 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <FVC.h>
 #include "main.h"
 #include "cmsis_os.h"
 
@@ -52,6 +51,7 @@ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim10;
 
+UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart1;
 
 osThreadId main_taskHandle;
@@ -72,6 +72,7 @@ static void MX_TIM2_Init(void);
 static void MX_CAN1_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_UART4_Init(void);
 void task_MainTask(void const * argument);
 void task_BufferHandling(void const * argument);
 
@@ -123,6 +124,7 @@ int main(void)
   MX_CAN1_Init();
   MX_TIM1_Init();
   MX_TIM3_Init();
+  MX_UART4_Init();
   /* USER CODE BEGIN 2 */
 
   init(&hcan2);
@@ -323,10 +325,10 @@ static void MX_CAN1_Init(void)
 
   /* USER CODE END CAN1_Init 1 */
   hcan1.Instance = CAN1;
-  hcan1.Init.Prescaler = 5;
+  hcan1.Init.Prescaler = 16;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan1.Init.TimeSeg1 = CAN_BS1_6TQ;
+  hcan1.Init.TimeSeg1 = CAN_BS1_1TQ;
   hcan1.Init.TimeSeg2 = CAN_BS2_1TQ;
   hcan1.Init.TimeTriggeredMode = DISABLE;
   hcan1.Init.AutoBusOff = DISABLE;
@@ -360,14 +362,14 @@ static void MX_CAN2_Init(void)
 
   /* USER CODE END CAN2_Init 1 */
   hcan2.Instance = CAN2;
-  hcan2.Init.Prescaler = 5;
+  hcan2.Init.Prescaler = 16;
   hcan2.Init.Mode = CAN_MODE_NORMAL;
   hcan2.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan2.Init.TimeSeg1 = CAN_BS1_6TQ;
+  hcan2.Init.TimeSeg1 = CAN_BS1_1TQ;
   hcan2.Init.TimeSeg2 = CAN_BS2_1TQ;
   hcan2.Init.TimeTriggeredMode = DISABLE;
-  hcan2.Init.AutoBusOff = ENABLE;
-  hcan2.Init.AutoWakeUp = ENABLE;
+  hcan2.Init.AutoBusOff = DISABLE;
+  hcan2.Init.AutoWakeUp = DISABLE;
   hcan2.Init.AutoRetransmission = DISABLE;
   hcan2.Init.ReceiveFifoLocked = DISABLE;
   hcan2.Init.TransmitFifoPriority = DISABLE;
@@ -441,7 +443,6 @@ static void MX_TIM2_Init(void)
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
-  TIM_OC_InitTypeDef sConfigOC = {0};
 
   /* USER CODE BEGIN TIM2_Init 1 */
 
@@ -461,28 +462,15 @@ static void MX_TIM2_Init(void)
   {
     Error_Handler();
   }
-  if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
-  {
-    Error_Handler();
-  }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
-  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
   /* USER CODE BEGIN TIM2_Init 2 */
 
   /* USER CODE END TIM2_Init 2 */
-  HAL_TIM_MspPostInit(&htim2);
 
 }
 
@@ -563,6 +551,39 @@ static void MX_TIM10_Init(void)
 }
 
 /**
+  * @brief UART4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_UART4_Init(void)
+{
+
+  /* USER CODE BEGIN UART4_Init 0 */
+
+  /* USER CODE END UART4_Init 0 */
+
+  /* USER CODE BEGIN UART4_Init 1 */
+
+  /* USER CODE END UART4_Init 1 */
+  huart4.Instance = UART4;
+  huart4.Init.BaudRate = 115200;
+  huart4.Init.WordLength = UART_WORDLENGTH_8B;
+  huart4.Init.StopBits = UART_STOPBITS_1;
+  huart4.Init.Parity = UART_PARITY_NONE;
+  huart4.Init.Mode = UART_MODE_TX_RX;
+  huart4.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart4.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN UART4_Init 2 */
+
+  /* USER CODE END UART4_Init 2 */
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -628,71 +649,62 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, BRK_LT_Pin|BUZZER_Pin|MCU_STATUS_LED_Pin|GSENSE_LED_Pin
-                          |STATUS_B_Pin|MCU_AUX_2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, Pull_up_1_Pin|Pull_up_2_Pin|Pull_up_3_Pin|Fault_12V_LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, STATUS_R_Pin|PUMP_OUTPUT_Pin|STATUS_G_Pin|HARDFAULT_LED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(HARDFAULT_LED_GPIO_Port, HARDFAULT_LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, RAD_FAN_Pin|AUX_GPIO_2_Pin|AUX_GPIO_1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(Gsense_GPIO_Port, Gsense_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(MCU_AUX_1_GPIO_Port, MCU_AUX_1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(HBeat_GPIO_Port, HBeat_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : BRK_LT_Pin BUZZER_Pin MCU_STATUS_LED_Pin GSENSE_LED_Pin
-                           STATUS_B_Pin MCU_AUX_2_Pin */
-  GPIO_InitStruct.Pin = BRK_LT_Pin|BUZZER_Pin|MCU_STATUS_LED_Pin|GSENSE_LED_Pin
-                          |STATUS_B_Pin|MCU_AUX_2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  /*Configure GPIO pins : Sen_5V_Fault_1_Pin APPS2_VCC_Fault_Pin APPS1_VCC_Fault_Pin */
+  GPIO_InitStruct.Pin = Sen_5V_Fault_1_Pin|APPS2_VCC_Fault_Pin|APPS1_VCC_Fault_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : STATUS_R_Pin PUMP_OUTPUT_Pin STATUS_G_Pin HARDFAULT_LED_Pin */
-  GPIO_InitStruct.Pin = STATUS_R_Pin|PUMP_OUTPUT_Pin|STATUS_G_Pin|HARDFAULT_LED_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : CURR_FAULT_5V_Pin CURR_FAULT_3V3_Pin */
-  GPIO_InitStruct.Pin = CURR_FAULT_5V_Pin|CURR_FAULT_3V3_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : RTD_BUTTON_Pin */
-  GPIO_InitStruct.Pin = RTD_BUTTON_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(RTD_BUTTON_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : RAD_FAN_Pin AUX_GPIO_2_Pin AUX_GPIO_1_Pin */
-  GPIO_InitStruct.Pin = RAD_FAN_Pin|AUX_GPIO_2_Pin|AUX_GPIO_1_Pin;
+  /*Configure GPIO pins : Pull_up_1_Pin Pull_up_2_Pin Pull_up_3_Pin Fault_12V_LED_Pin */
+  GPIO_InitStruct.Pin = Pull_up_1_Pin|Pull_up_2_Pin|Pull_up_3_Pin|Fault_12V_LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : BSPD_TS_SNS_FAULT_Pin */
-  GPIO_InitStruct.Pin = BSPD_TS_SNS_FAULT_Pin;
+  /*Configure GPIO pins : SDC2_MCU_Pin SDC1_MCU_Pin */
+  GPIO_InitStruct.Pin = SDC2_MCU_Pin|SDC1_MCU_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(BSPD_TS_SNS_FAULT_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : BSPD_BRK_FAULT_Pin BSPD_TS_BRK_FAULT_Pin */
-  GPIO_InitStruct.Pin = BSPD_BRK_FAULT_Pin|BSPD_TS_BRK_FAULT_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : MCU_AUX_1_Pin */
-  GPIO_InitStruct.Pin = MCU_AUX_1_Pin;
+  /*Configure GPIO pin : HARDFAULT_LED_Pin */
+  GPIO_InitStruct.Pin = HARDFAULT_LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(MCU_AUX_1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(HARDFAULT_LED_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : Gsense_Pin */
+  GPIO_InitStruct.Pin = Gsense_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(Gsense_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : HBeat_Pin */
+  GPIO_InitStruct.Pin = HBeat_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(HBeat_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Sen_12V_Fault_Pin Sen_5V_Fault_2_Pin */
+  GPIO_InitStruct.Pin = Sen_12V_Fault_Pin|Sen_5V_Fault_2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
