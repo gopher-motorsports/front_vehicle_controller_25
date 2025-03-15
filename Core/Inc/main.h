@@ -107,10 +107,6 @@ void Error_Handler(void);
 #define SDC2_MCU_GPIO_Port GPIOA
 #define SDC1_MCU_Pin GPIO_PIN_9
 #define SDC1_MCU_GPIO_Port GPIOA
-#define SWDIO_Pin GPIO_PIN_13
-#define SWDIO_GPIO_Port GPIOA
-#define SWCLK_Pin GPIO_PIN_14
-#define SWCLK_GPIO_Port GPIOA
 #define HARDFAULT_LED_Pin GPIO_PIN_15
 #define HARDFAULT_LED_GPIO_Port GPIOA
 #define VecNav_TX_Pin GPIO_PIN_10
