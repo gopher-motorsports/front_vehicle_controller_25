@@ -132,7 +132,7 @@ void update_gcan_states() {
 	// Vehicle state
 	update_and_queue_param_u8(&vehicleState_state, vehicle_state);
 	update_and_queue_param_u8(&readyToDriveButton_state, readyToDriveButtonPressed_state);
-	update_and_queue_param_u8(&vcuGSenseStatus_state, HAL_GPIO_ReadPin(GSENSE_LED_GPIO_Port, GSENSE_LED_Pin));
+	update_and_queue_param_u8(&vcuGSenseStatus_state, HAL_GPIO_ReadPin(Gsense_GPIO_Port, Gsense_Pin));
 
 	// Calculate wheel speed from rpm, change rpm to
 	motor_rpm = electricalRPM_erpm.data * MOTOR_POLE_PAIRS;
@@ -148,42 +148,6 @@ void init_Pump(TIM_HandleTypeDef* timer_address, U32 channel){
 
 
 void process_sensors() {
-	current_mode_button_state = swButon2_state.data;
-	if(past_mode_button_state == 0 && current_mode_button_state == 1){
-		current_driving_mode = !current_driving_mode;
-	}
-	past_mode_button_state = current_mode_button_state;
-
-	// read in the RTD button. This is a software low pass to make sure noise does not press the button
-	static U32 new_event_time;
-	static U8 new_event = FALSE;
-	if (!new_event)
-	{
-		// check if there is a change in polarity of the button
-		if (readyToDriveButtonPressed_state != (HAL_GPIO_ReadPin(RTD_BUTTON_GPIO_Port, RTD_BUTTON_Pin) == RTD_BUTTON_PUSHED))
-		{
-			new_event = TRUE;
-			new_event_time = HAL_GetTick();
-		}
-	}
-	else
-	{
-		// the button change was not held long enough
-		if (readyToDriveButtonPressed_state == (HAL_GPIO_ReadPin(RTD_BUTTON_GPIO_Port, RTD_BUTTON_Pin) == RTD_BUTTON_PUSHED))
-		{
-			new_event = FALSE;
-		}
-		else
-		{
-			// see if enough time has passed to actually call this a press
-			if (HAL_GetTick() - new_event_time >= RTD_DEBOUNCE_TIME_ms)
-			{
-				new_event = FALSE;
-				readyToDriveButtonPressed_state = !readyToDriveButtonPressed_state;
-			}
-		}
-	}
-
 	maxcurrentLimit_A = get_current_limit(current_driving_mode);
 
 	//Sensor overcurrent Logic, turn off power to inverter if any of the sensor power lines are overcurrenting
@@ -345,13 +309,13 @@ boolean isVehicleMoving() {
 
 
 void launch_control_sm(){
+	float new_current_limit;
 	switch(launch_control_state){
 	case LAUNCH_CONTROL_DISABLED:
 		if(!vehicle_currently_moving)
 			launch_control_state = LAUNCH_CONTROL_ENABLED;
 		break;
 	case LAUNCH_CONTROL_ENABLED:
-		float new_current_limit;
 		if ((motor_rpm < MIN_LIMIT_SPEED_rpm) && (inputInverterVoltage_V.data != 0))
 		{
 			//rearrange power = toruqe * rpm for current --> I = (torque*rpm) /V
@@ -369,10 +333,8 @@ void launch_control_sm(){
 
 void update_outputs() {
 	if(vehicle_state == VEHICLE_PREDRIVE) {
-		HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, MOSFET_PULL_DOWN_ON);
 		update_and_queue_param_u8(&vehicleBuzzerOn_state, TRUE);
 	} else {
-		HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, MOSFET_PULL_DOWN_OFF);
 		update_and_queue_param_u8(&vehicleBuzzerOn_state, FALSE);
 	}
 	return;
@@ -381,14 +343,10 @@ void update_outputs() {
 void LED_task(){
 	static U32 last_led = 0;
 	if(HAL_GetTick() - last_led >= HBEAT_LED_DELAY_TIME_ms) {
-		HAL_GPIO_TogglePin(MCU_STATUS_LED_GPIO_Port, MCU_STATUS_LED_Pin);
+		HAL_GPIO_TogglePin(HBeat_GPIO_Port, HBeat_Pin);
 		last_led = HAL_GetTick();
 	}
 
-	// Turn off RGB
-	HAL_GPIO_WritePin(STATUS_R_GPIO_Port, STATUS_R_Pin, SET);
-	HAL_GPIO_WritePin(STATUS_G_GPIO_Port, STATUS_G_Pin, SET);
-	HAL_GPIO_WritePin(STATUS_B_GPIO_Port, STATUS_B_Pin, SET);
 }
 
 void set_inv_disabled(){
@@ -399,7 +357,7 @@ void set_inv_disabled(){
 
 int get_current_limit(boolean driving_mode){
 	if(driving_mode == SLOW_MODE)
-		return 550; // 10 A
+		return 100; // 100 A
 	else
 		return 550; // 400 A
 }
