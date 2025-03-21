@@ -140,13 +140,6 @@ void update_gcan_states() {
 	wheelSpeedFrontLeft_mph.data = wheelSpeedFrontRight_mph.data;
 }
 
-void init_Pump(TIM_HandleTypeDef* timer_address, U32 channel){
-	PUMP_PWM_Timer = timer_address;
-	PUMP_Channel = channel;
-	HAL_TIM_PWM_Start(PUMP_PWM_Timer, PUMP_Channel); //turn on PWM generation
-}
-
-
 void process_sensors() {
 	maxcurrentLimit_A = get_current_limit(current_driving_mode);
 
@@ -329,24 +322,6 @@ void launch_control_sm(){
 
 		break;
 	}
-}
-
-void update_outputs() {
-	if(vehicle_state == VEHICLE_PREDRIVE) {
-		update_and_queue_param_u8(&vehicleBuzzerOn_state, TRUE);
-	} else {
-		update_and_queue_param_u8(&vehicleBuzzerOn_state, FALSE);
-	}
-	return;
-}
-
-void LED_task(){
-	static U32 last_led = 0;
-	if(HAL_GetTick() - last_led >= HBEAT_LED_DELAY_TIME_ms) {
-		HAL_GPIO_TogglePin(HBeat_GPIO_Port, HBeat_Pin);
-		last_led = HAL_GetTick();
-	}
-
 }
 
 void set_inv_disabled(){
