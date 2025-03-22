@@ -80,7 +80,6 @@ void main_loop() {
 	update_outputs();
 	update_display_fault_status();
 	update_gcan_states(); // Should be after proceass_sensors
-	LED_task();
 	vehicle_currently_moving = isVehicleMoving();
 }
 
@@ -97,47 +96,6 @@ void can_buffer_handling_loop()
 
 	// Handle the transmission hardware for each CAN bus
 	service_can_tx(hcan);
-}
-
-void update_gcan_states() {
-	// Log pedal position percentages
-	float pedalPos1 = 100.0*(pedalPosition1_mm.data-APPS_1_MIN_CURRENT_POS_mm)/APPS_1_TOTAL_TRAVEL_mm;
-	if(pedalPos1 < 0) {
-		pedalPos1 = 0;
-	} else if (pedalPos1 > 100) {
-		pedalPos1 = 100;
-	}
-	float pedalPos2 = 100.0*(pedalPosition2_mm.data-APPS_2_MIN_CURRENT_POS_mm)/APPS_2_TOTAL_TRAVEL_mm;
-	if(pedalPos2 < 0) {
-		pedalPos2 = 0;
-	} else if (pedalPos2 > 100) {
-		pedalPos2 = 100;
-	}
-	update_and_queue_param_float(&pedalPosition1_percent, pedalPos1);
-	update_and_queue_param_float(&pedalPosition2_percent, pedalPos2);
-
-	// VCU software sensors faults, out of range checks
-	update_and_queue_param_u8(&vcuPedalPosition1Fault_state, TIMED_SOFTWARE_FAULTS[0]->state);
-	update_and_queue_param_u8(&vcuPedalPosition2Fault_state, TIMED_SOFTWARE_FAULTS[1]->state);
-	update_and_queue_param_u8(&vcuBrakePressureSensorFault_state, TIMED_SOFTWARE_FAULTS[2]->state);
-	update_and_queue_param_u8(&vcuTractiveSystemCurrentSensorFault_state, TIMED_SOFTWARE_FAULTS[3]->state);
-	// VCU software safety checks, correlation and APPS/Brake Plausibility check
-	update_and_queue_param_u8(&vcuPedalPositionCorrelationFault_state, TIMED_SOFTWARE_FAULTS[4]->state);
-	update_and_queue_param_u8(&vcuPedalPositionBrakingFault_state, appsBrakeLatched_state);
-
-	//current requested amps and max amps for DTI Inverter
-	update_and_queue_param_float(&vcuCurrentRequested_A, desiredCurrent_A);
-	update_and_queue_param_float(&vcuMaxCurrentLimit_A, maxcurrentLimit_A );
-
-	// Vehicle state
-	update_and_queue_param_u8(&vehicleState_state, vehicle_state);
-	update_and_queue_param_u8(&readyToDriveButton_state, readyToDriveButtonPressed_state);
-	update_and_queue_param_u8(&vcuGSenseStatus_state, HAL_GPIO_ReadPin(Gsense_GPIO_Port, Gsense_Pin));
-
-	// Calculate wheel speed from rpm, change rpm to
-	motor_rpm = electricalRPM_erpm.data * MOTOR_POLE_PAIRS;
-	wheelSpeedRearRight_mph.data = ((motor_rpm * MINUTES_PER_HOUR) * WHEEL_DIAMETER_IN * MATH_PI) / (FINAL_DRIVE_RATIO * IN_PER_FT);
-	wheelSpeedFrontLeft_mph.data = wheelSpeedFrontRight_mph.data;
 }
 
 void process_sensors() {
@@ -181,6 +139,10 @@ void process_sensors() {
 	}
 }
 
+void determine_current_parameters(){
+	maxcurrentLimit = is_vechile_faulting() ? 0 : get_max_current_limit();
+	desiredCurrent_A = calculate_desired_current();
+}
 
 
 void update_display_fault_status() {
@@ -211,6 +173,9 @@ void process_inverter() {
 		vehicle_state = VEHICLE_FAULT;
 	}*/
 
+	if(vehicle_state != VEHICLE_DRIVING)
+		set_inv_disabled(&desired_current, &max_current, &enable);
+
 	switch (vehicle_state)
 	{
 	case VEHICLE_NO_COMMS:
@@ -219,7 +184,7 @@ void process_inverter() {
 		{
 			vehicle_state = VEHICLE_STANDBY;
 		}
-		set_inv_disabled();
+
 		break;
 
 	case VEHICLE_FAULT:
@@ -227,20 +192,16 @@ void process_inverter() {
 		if(faultCode.data == 0x00) {
 			vehicle_state = VEHICLE_NO_COMMS;
 		}
-		set_inv_disabled();
+
 		break;
 
 	case VEHICLE_STANDBY:
 		// everything is good to go in this state, we are just waiting to enable the RTD button
-		if (brakePressureFront_psi.data > PREDRIVE_BRAKE_THRESH_psi &&
-				readyToDriveButtonPressed_state &&
-				inputInverterVoltage_V.data > TS_ON_THRESHOLD_VOLTAGE_V)
-		{
-			// Button is pressed, set state to VEHICLE_PREDRIVE
+		if (predrive_conditions_met()){
 			vehicle_state = VEHICLE_PREDRIVE;
 			preDriveTimer_ms = 0;
 		}
-		set_inv_disabled();
+
 		break;
 
 	case VEHICLE_PREDRIVE:
@@ -248,7 +209,7 @@ void process_inverter() {
 		if(++preDriveTimer_ms > PREDRIVE_TIME_ms) {
 			vehicle_state = VEHICLE_DRIVING;
 		}
-		set_inv_disabled();
+
 		break;
 
 	case VEHICLE_DRIVING:
@@ -264,19 +225,12 @@ void process_inverter() {
 
 	default:
 		vehicle_state = VEHICLE_NO_COMMS;
-		set_inv_disabled();
+
 		break;
 	}
 
 	// send the current request
-	desiredInvCurrentPeakToPeak_A.data = desiredCurrent_A;
-	maxCurrentLimitPeakToPeak_A.data = maxcurrentLimit_A;
-	driveEnable_state.data = inverter_enable_state;
-
-	send_group(INVERTER_SET_CURRENT_AC_CMD_ID);
-	send_group(INVERTER_MAX_CURRENT_AC_LIMIT_CMD_ID);
-	send_group(INVERTER_DRIVE_ENABLE_CMD_ID);
-	service_can_tx(hcan);
+	update_inverter_params(vehicle_state, desiredCurrent_A, maxcurrentLimit_A, inverter_enable_state);
 }
 
 
@@ -322,12 +276,6 @@ void launch_control_sm(){
 
 		break;
 	}
-}
-
-void set_inv_disabled(){
-	desiredCurrent_A = 0;
-	maxcurrentLimit_A = get_current_limit(current_driving_mode);
-	inverter_enable_state = INVERTER_DISABLE;
 }
 
 int get_current_limit(boolean driving_mode){

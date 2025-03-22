@@ -123,10 +123,13 @@
 #define STOPPED_TIME_THRESH					250
 #define MAX_LAUNCH_CONTROL_TORQUE_LIMIT	    50	   // 100 nm as max torque when in driving state
 
+#define NORMAL_MODE 0
+#define SLOW_MODE 1
 // ======================================== I/O PARAMETERS ======================================
 #define MOSFET_PULL_DOWN_ON (GPIO_PIN_SET)
 #define MOSFET_PULL_DOWN_OFF (GPIO_PIN_RESET)
-
+#define PRESSED 1
+#define RELEASED 0
 // ==============================================================================================
 
 // ==============================================================================================
