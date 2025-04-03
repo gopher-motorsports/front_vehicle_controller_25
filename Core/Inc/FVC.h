@@ -187,21 +187,7 @@ extern VEHICLE_STATE_t vehicle_state;
 void init(CAN_HandleTypeDef* hcan_ptr);
 void main_loop();
 void can_buffer_handling_loop();
-
-void update_RTD();         // Ready to drive logic
-void process_sensors();    // Runs safety checks on driver inputs
-void update_gcan_states(); // Updates GopherCAN states
 void process_inverter();   // Updates vehicle state and applicable commands
-void update_outputs();     // Updates brake light and buzzer
-void update_cooling();     // Controls/updates the cooling system
-void update_display_fault_status(); 	// Check all vehicle fault messages and sends best one to display
-void limit_motor_torque();
-void LED_task();
-void pass_on_timer_info(); //this is def not the best way to do this
-void set_DRS_Servo_Position(U8 start_up_condition);
-void init_Pump(TIM_HandleTypeDef* timer_address, U32 channel);
 void launch_control_sm();
-boolean isVehicleMoving();
-void set_inv_disabled();
-int get_current_limit(boolean driving_mode);
+void determine_current_parameters();
 #endif /* INC_FVC_H_ */
