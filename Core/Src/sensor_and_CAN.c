@@ -15,20 +15,23 @@
 //Change based --> vcuPedalPosition1Fault_state, vcuPedalPosition2Fault_state, vcuBrakePressureSensorFault_state, vcuTractiveSystemCurrentSensorFault_state
 // vcuPedalPositionCorrelationFault_state, vcuPedalPositionBrakingFault_state
 
-FLOAT_CAN_STRUCT *periodic_float_params[] = {&pedalPosition1_percent, &pedalPosition2_percent, &wheelSpeedFrontLeft_mph, &wheelSpeedRearRight_mph};
+FLOAT_CAN_STRUCT *periodic_float_params[] = {&pedalPosition1_percent, &pedalPosition2_percent,
+											 &wheelSpeedFrontLeft_mph, &wheelSpeedRearRight_mph};
 U8_CAN_STRUCT *periodic_U8_params[] = {};
 uint8_t float_params_len = sizeof(periodic_float_params)/sizeof(periodic_float_params[0]);
 uint8_t U8_params_len = sizeof(periodic_U8_params)/sizeof(periodic_U8_params[0]);
 
 void update_periodic_CAN_params(){
 	update_pedal_percent();
-	for(int i = 0; i < float_params_len; i++){
-		update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
-	}
+//	for(int i = 0; i < float_params_len; i++){
+//		update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
+//	}
+//
+//	for(int i = 0; i < U8_params_len; i++){
+//		update_and_queue_param_u8(periodic_U8_params[i], periodic_float_params[i]->data);
+//	}
 
-	for(int i = 0; i < U8_params_len; i++){
-		update_and_queue_param_u8(periodic_U8_params[i], periodic_float_params[i]->data);
-	}
+	update_and_queue_param_float(&desiredInvCurrentPeakToPeak_A, 125);
 }
 
 void update_fault_state(U8_CAN_STRUCT *param, uint8_t state, uint8_t last_state){
@@ -55,7 +58,7 @@ void update_pedal_percent(){
 	pedalPosition2_percent.data = boundary_check(pedal_pos2_percent, 0.0, 100.0);
 }
 
-void calculate_rpm(){
+void update_rpm(){
 	float motor_rpm;
 	motor_rpm = electricalRPM_erpm.data * MOTOR_POLE_PAIRS;
 	wheelSpeedRearRight_mph.data = ((motor_rpm * MINUTES_PER_HOUR) * WHEEL_DIAMETER_IN * MATH_PI) / (FINAL_DRIVE_RATIO * IN_PER_FT);

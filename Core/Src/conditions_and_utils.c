@@ -34,7 +34,7 @@ void check_button_inputs(){
 	static uint8_t last_slow_mode_button = 0;
 	predrive_button = swButon5_state.data;
 
-	if((last_slow_mode_button == 0) || (swButon4_state.data)){
+	if((last_slow_mode_button == 0) || (swButon4_state.data == 1)){
 		driving_mode = !driving_mode;
 	}
 	last_slow_mode_button = swButon4_state.data;
@@ -72,7 +72,6 @@ void set_inv_disabled(float *desired_current, float *max_current, uint8_t *enabl
 float calculate_desired_current(){
 	float desired_current = ((pedalPosition1_mm.data-APPS_1_MIN_CURRENT_POS_mm)/APPS_1_TOTAL_TRAVEL_mm) * get_max_current_limit();
 	desired_current = boundary_check(desired_current, APPS_1_MIN_CURRENT_POS_mm, get_max_current_limit());
-
 	return desired_current;
 }
 

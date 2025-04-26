@@ -48,14 +48,21 @@ LAUNCH_CONTROL_STATES_t launch_control_state = LAUNCH_CONTROL_DISABLED;
 void init(CAN_HandleTypeDef* hcan_ptr) {
 	hcan = hcan_ptr;
 
-	init_can(hcan, GCAN1);
+	init_can(hcan, GCAN0);
 }
+float motor_temp = 0;
 
 void main_loop() {
-	update_periodic_CAN_params();
-	determine_current_parameters();
-	update_display_fault_status();
-	process_inverter();
+	LED_task();
+	maxCurrentLimitPeakToPeak_A.data = 125;
+	send_group(0x10E);
+
+	//update_and_queue_param_u8(&driveEnable_state, 1);
+	//update_periodic_CAN_params();
+	//determine_current_parameters();
+	//update_display_fault_status();
+	//process_inverter();
+	//motor_temp = 0;
 }
 
 /**
