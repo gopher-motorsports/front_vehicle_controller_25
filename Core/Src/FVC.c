@@ -52,10 +52,10 @@ void init(CAN_HandleTypeDef* hcan_ptr) {
 }
 
 void main_loop() {
-	update_periodic_CAN_params();
-	determine_current_parameters();
-	update_display_fault_status();
-	process_inverter();
+//	update_periodic_CAN_params();
+//	determine_current_parameters();
+//	update_display_fault_status();
+//	process_inverter();
 }
 
 /**
@@ -63,14 +63,14 @@ void main_loop() {
  */
 void can_buffer_handling_loop()
 {
-	// Handle each RX message in the buffer
-	if (service_can_rx_buffer())
-	{
-		// An error has occurred
-	}
-
-	// Handle the transmission hardware for each CAN bus
-	service_can_tx(hcan);
+//	// Handle each RX message in the buffer
+//	if (service_can_rx_buffer())
+//	{
+//		// An error has occurred
+//	}
+//
+//	// Handle the transmission hardware for each CAN bus
+//	service_can_tx(hcan);
 }
 
 void determine_current_parameters(){

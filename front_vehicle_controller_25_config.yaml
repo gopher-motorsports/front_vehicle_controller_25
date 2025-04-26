@@ -7,16 +7,32 @@ buckets:
         frequency_hz: 250
         parameters:
             pedalPosition1_mm:
-                ADC: ADC1_IN9
+                ADC: ADC1_IN5
                 sensor: linear_pos_sensor_25
                 samples_buffered: 1
             pedalPosition2_mm:
-                ADC: ADC1_IN8
+                ADC: ADC1_IN6
                 sensor: linear_pos_sensor_25
                 samples_buffered: 1
             brakePressureFront_psi:
-                ADC: ADC1_IN14
+                ADC: ADC1_IN10
                 sensor: brake_pressure_sensor
+                samples_buffered: 1
+            brakeTempFrontLeft_C:
+                ADC: ADC1_IN4
+                sensor: brake_temp_sensor
+                samples_buffered: 1
+            brakeTempFrontRight_C:
+                ADC: ADC1_IN3
+                sensor: brake_temp_sensor
+                samples_buffered: 1   
+            steeringAngle_deg:
+                ADC: ADC1_IN11
+                sensor: steering_angle_sensor
+                samples_buffered: 1
+            rideHeightFront_mm:
+                ADC: ADC1_IN7
+                sensor: full_raw_voltage_sensor
                 samples_buffered: 1
             pedalPosition1_percent:
                 ADC: NON_ADC
@@ -26,7 +42,9 @@ buckets:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
-            
+
+
+
     low_frequency_vcu:
         frequency_hz: 10
         parameters:
