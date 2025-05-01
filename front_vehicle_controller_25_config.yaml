@@ -34,6 +34,14 @@ buckets:
                 ADC: ADC1_IN7
                 sensor: full_raw_voltage_sensor
                 samples_buffered: 1
+            shockPosFrontLeft_mm:
+                ADC: ADC1_IN13
+                sensor: front_left_shock_pos
+                samples_buffered: 1
+            shockPosFrontRight_mm:
+                ADC: ADC1_IN12
+                sensor: front_right_shock_pos
+                samples_buffered: 1    
             pedalPosition1_percent:
                 ADC: NON_ADC
                 sensor: NON_ADC
@@ -42,6 +50,15 @@ buckets:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
+
+            wheelSpeedRearLeft_mph:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            wheelSpeedRearRight_mph:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1   
 
 
 
@@ -85,14 +102,14 @@ buckets:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
-            brakeLightOn_state:
-                ADC: NON_ADC
-                sensor: NON_ADC
-                samples_buffered: 1
-            vehicleBuzzerOn_state:
-                ADC: NON_ADC
-                sensor: NON_ADC
-                samples_buffered: 1
+            # brakeLightOn_state:
+            #     ADC: NON_ADC
+            #     sensor: NON_ADC
+            #     samples_buffered: 1
+            # vehicleBuzzerOn_state:
+            #     ADC: NON_ADC
+            #     sensor: NON_ADC
+            #     samples_buffered: 1
             currentlyMoving_state:
                 ADC: NON_ADC
                 sensor: NON_ADC
