@@ -6,52 +6,52 @@ buckets:
     high_frequency_vcu:
         frequency_hz: 250
         parameters:
-            pedalPosition1_mm:
+            pedalPosition1_mm: #connector pin 19, mcu pin 21
                 ADC: ADC1_IN5
                 sensor: linear_pos_sensor_25
                 samples_buffered: 1
-            pedalPosition2_mm:
+            pedalPosition2_mm: #connector pin 20, mcu pin 22
                 ADC: ADC1_IN6
                 sensor: linear_pos_sensor_25
                 samples_buffered: 1
-            brakePressureFront_psi:
+            brakePressureFront_psi: #connector pin 26, mcu pin 8
                 ADC: ADC1_IN10
                 sensor: brake_pressure_sensor
                 samples_buffered: 1
-            brakeTempFrontLeft_C:
+            brakeTempFrontLeft_C: #connector pin 21, mcu pin 20
                 ADC: ADC1_IN4
                 sensor: brake_temp_sensor
                 samples_buffered: 1
-            brakeTempFrontRight_C:
+            brakeTempFrontRight_C: #connector pin 22, mcu pin 17
                 ADC: ADC1_IN3
                 sensor: brake_temp_sensor
                 samples_buffered: 1   
-            steeringAngle_deg:
+            steeringAngle_deg: #connector pin 25, mcu pin 9
                 ADC: ADC1_IN11
                 sensor: steering_angle_sensor
                 samples_buffered: 1
-            rideHeightFront_mm:
+            rideHeightFront_mm: #connector pin 18, mcu pin 23
                 ADC: ADC1_IN7
                 sensor: full_raw_voltage_sensor
                 samples_buffered: 1
-            shockPosFrontLeft_mm:
+            shockPosFrontLeft_mm: #connector pin 23, mcu pin 11
                 ADC: ADC1_IN13
                 sensor: front_left_shock_pos
                 samples_buffered: 1
-            shockPosFrontRight_mm:
+            shockPosFrontRight_mm: #connector pin 24, mcu pin 10
                 ADC: ADC1_IN12
                 sensor: front_right_shock_pos
                 samples_buffered: 1    
-            pedalPosition1_percent:
+            pedalPosition1_percent: 
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
-            pedalPosition2_percent:
+            pedalPosition2_percent:  
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
 
-            wheelSpeedRearLeft_mph:
+            wheelSpeedRearLeft_mph: 
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
@@ -65,11 +65,11 @@ buckets:
     low_frequency_vcu:
         frequency_hz: 10
         parameters:
-            vcuCurrentRequested_A:
+            vcuCurrentRequested_A: 
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
-            vcuMaxCurrentLimit_A:
+            vcuMaxCurrentLimit_A: 
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
@@ -79,12 +79,12 @@ buckets:
     low_frequency_vcu_but_faster:
         frequency_hz: 100
         parameters:
-            vcuTemp_C:
+            vcuTemp_C: 
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
 
-            displayFaultStatus_state:
+            displayFaultStatus_state: 
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
