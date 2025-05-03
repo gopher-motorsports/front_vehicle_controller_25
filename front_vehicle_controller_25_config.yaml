@@ -8,7 +8,7 @@ buckets:
         parameters:
             pedalPosition1_mm: #connector pin 19, mcu pin 21
                 ADC: ADC1_IN5
-                sensor: linear_pos_sensor_25
+                sensor: full_raw_voltage_sensor #linear_pos_sensor_25
                 samples_buffered: 1
             pedalPosition2_mm: #connector pin 20, mcu pin 22
                 ADC: ADC1_IN6

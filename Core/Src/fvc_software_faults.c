@@ -6,7 +6,6 @@
  */
 
 #include "fvc_software_faults.h"
-#include "vcu.h"
 #include "gopher_sense.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -83,6 +82,6 @@ void update_struct_fault_data(){
 	APPS1_Range_Fault.data = pedalPosition1_mm.data;
 	APPS2_Range_Fault.data = pedalPosition2_mm.data;
 	BRK_PRESSURE_Range_Fault.data = brakePressureFront_psi.data;
-	TS_CURRENT_Range_Fault.data = vcuTractiveSystemCurrent_A.data;
+	TS_CURRENT_Range_Fault.data = rvcTractiveSystemCurrent_A.data;
 	Pedal_Correlation_Fault.data = fabsf(pedalPosition1_percent.data - pedalPosition2_percent.data);
 }

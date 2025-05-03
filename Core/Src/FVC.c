@@ -25,6 +25,7 @@ uint32_t preDriveTimer_ms = 0;
 
 float desiredCurrent_A = 0;
 float maxcurrentLimit_A = 0;
+float dc_currentlimit_A = 0;
 
 boolean Current_Fault_3V3_state = 0;
 boolean Current_Fault_5V_state = 0;
@@ -45,6 +46,7 @@ LAUNCH_CONTROL_STATES_t launch_control_state = LAUNCH_CONTROL_DISABLED;
 //#define SET_INV_DISABLED() do{ desiredCurrent_A = 0; maxcurrentLimit_A = MAX_TEST_CMD_CURRENT_A; inverter_enable_state = INVERTER_DISABLE; } while(0)
 
 // Initialization code goes here
+
 void init(CAN_HandleTypeDef* hcan_ptr) {
 	hcan = hcan_ptr;
 
@@ -53,16 +55,11 @@ void init(CAN_HandleTypeDef* hcan_ptr) {
 float motor_temp = 0;
 
 void main_loop() {
-	LED_task();
-	maxCurrentLimitPeakToPeak_A.data = 125;
-	send_group(0x10E);
 
-	//update_and_queue_param_u8(&driveEnable_state, 1);
-	//update_periodic_CAN_params();
-	//determine_current_parameters();
-	//update_display_fault_status();
-	//process_inverter();
-	//motor_temp = 0;
+	update_periodic_CAN_params();
+	process_inverter();
+	update_display_fault_status();
+	LED_task();
 }
 
 /**
@@ -82,6 +79,7 @@ void can_buffer_handling_loop()
 
 void determine_current_parameters(){
 	maxcurrentLimit_A = is_vechile_faulting() ? 0 : get_max_current_limit();
+	dc_currentlimit_A = calculate_dc_current_limit();
 	desiredCurrent_A = calculate_desired_current();
 }
 
@@ -91,8 +89,10 @@ void process_inverter() {
 		vehicle_state = VEHICLE_FAULT;
 	}*/
 
+	determine_current_parameters();
+
 	if(vehicle_state != VEHICLE_DRIVING)
-		set_inv_disabled(&desiredCurrent_A, &maxcurrentLimit_A, &inverter_enable_state);
+		set_inv_disabled(&maxcurrentLimit_A, &inverter_enable_state);
 
 	switch (vehicle_state)
 	{
@@ -148,7 +148,7 @@ void process_inverter() {
 	}
 
 	// send the current request
-	update_inverter_params(vehicle_state, desiredCurrent_A, maxcurrentLimit_A, inverter_enable_state);
+	update_inverter_params(vehicle_state, desiredCurrent_A, maxcurrentLimit_A, dc_currentlimit_A, inverter_enable_state);
 }
 
 

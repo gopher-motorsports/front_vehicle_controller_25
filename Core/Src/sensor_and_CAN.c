@@ -22,21 +22,21 @@ FLOAT_CAN_STRUCT *periodic_float_params[] = {
 	&steeringAngle_deg,
 	&rideHeightFront_mm,
 	&fvcTemp_C,
-	&displayFaultStatus_state,
 	&pedalPosition1_mm,
 	&pedalPosition2_mm,
 	&brakeTempFrontLeft_C,
 	&brakeTempFrontRight_C,
 	&shockPosFrontLeft_mm,
-	&shockPosFrontRight_mm
+	&shockPosFrontRight_mm,
 	&wheelSpeedFrontLeft_mph,
 	&wheelSpeedFrontRight_mph,
 };
 
 U8_CAN_STRUCT *periodic_U8_params[] = {
+	&displayFaultStatus_state,
 	&vehicleState_state,
-	&vcuState_state,
-	&vcuMcuStatus_state,
+	&fvcState_state,
+	&fvcMcuStatus_state,
 	&currentlyMoving_state,
 	&FVC_SDC_Fault_1_state,
 	&FVC_SDC_Fault_2_state,
@@ -47,7 +47,7 @@ uint8_t U8_params_len = sizeof(periodic_U8_params)/sizeof(periodic_U8_params[0])
 void update_periodic_CAN_params(){
 	update_pedal_percent();
 	for(int i = 0; i < float_params_len; i++){
-		update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
+		//update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
 	}
 
 	for(int i = 0; i < U8_params_len; i++){
@@ -66,7 +66,7 @@ void update_inverter_params(uint8_t vehicle_state, float desired_current, float 
 	//update global vehicle state, enable, desired/max current, dc max current
 	update_and_queue_param_u8(&vehicleState_state, vehicle_state);
 	update_and_queue_param_float(&desiredInvCurrentPeak_A, desired_current);
-	update_and_queue_param_float(&maxCurrentLimitPeakToPeak_A, max_current);
+	update_and_queue_param_float(&maxCurrentLimitPeak_A, max_current);
 	update_and_queue_param_float(&maxDCCurrentLimit_A, max_dc_current);
 	update_and_queue_param_u8(&driveEnable_state, enable);
 
@@ -103,17 +103,17 @@ void update_display_fault_status() {
 	if(amsFault_state.data) status = AMS_FAULT;
 	else if (vehicle_state == VEHICLE_FAULT) status = INVERTER_FAULT;
 	else if(bmsNumActiveAlerts_state.data) status = BMS_FAULT;
-	else if(vcuPedalPositionBrakingFault_state.data) status = RELEASE_PEDAL;
-	else if((bspdTractiveSystemBrakingFault_state.data || vcuBrakingClampingCurrent_state.data) && (!BYPASS_ACTIVE)) status = BRAKING_FAULT;
-	else if(vcuPedalPositionCorrelationFault_state.data) status = APPS_FAULT;
+	else if(fvcPedalPositionBrakingFault_state.data) status = RELEASE_PEDAL;
+	else if((bspdTractiveSystemBrakingFault_state.data || fvcBrakingClampingCurrent_state.data) && (!BYPASS_ACTIVE)) status = BRAKING_FAULT;
+	else if(fvcPedalPositionCorrelationFault_state.data) status = APPS_FAULT;
 	else if((bspdFault_state.data
 			|| bspdBrakePressureSensorFault_state.data
 			|| bspdTractiveSystemCurrentSensorFault_state.data)
 			&& (!BYPASS_ACTIVE)) status = BSPD_FAULT;
-	else if((vcuBrakePressureSensorFault_state.data
-			|| vcuPedalPosition1Fault_state.data
-			|| vcuPedalPosition2Fault_state.data
-			|| vcuTractiveSystemCurrentSensorFault_state.data) && (!BYPASS_ACTIVE)
+	else if((fvcBrakePressureSensorFault_state.data
+			|| fvcPedalPosition1Fault_state.data
+			|| fvcPedalPosition2Fault_state.data
+			|| fvcTractiveSystemCurrentSensorFault_state.data) && (!BYPASS_ACTIVE)
 			) status = VCU_FAULT;
 
 	update_and_queue_param_u8(&displayFaultStatus_state, status);

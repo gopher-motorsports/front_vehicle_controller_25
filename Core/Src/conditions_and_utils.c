@@ -81,27 +81,25 @@ uint8_t is_vechile_faulting(){
 
 
 	// APPS/Brake Plausibility Fault (both pedals pushed)
-	fault_tripped |= vcuPedalPositionBrakingFault_state.data;
-
-	// BSPD Tractive Brake Fault tripped(if this lasts for .5s car the BSPD fault is tripped and HV is shut off)
-	fault_tripped |= bspdTractiveSystemBrakingFault_state.data;
+	fault_tripped |= fvcPedalPositionBrakingFault_state.data;
 
 	return fault_tripped;
 }
 
 float calculate_dc_current_limit(){
 	float dc_current_limit_A = 0;
-
-	if(inputInverterVoltage_V.data != 0) {
-		//stay below 5 kW I = P/V
-		dc_current_limit_A = bspd_power_limit / inputInverterVoltage_V.data;
+	// BSPD Tractive Brake Fault tripped(if this lasts for .5s car the BSPD fault is tripped and HV is shut off)
+	if(bspdTractiveSystemBrakingFault_state.data){
+		if(inputInverterVoltage_V.data != 0)
+			dc_current_limit_A = BSPD_POWER_LIMIT / inputInverterVoltage_V.data; //stay below 5 kW I = P/V
 	}
-
+	else{
+		dc_current_limit_A = MAX_DC_CURRENT_LIMIT;
+	}
 	return dc_current_limit_A;
 }
 
-void set_inv_disabled(float *desired_current, float *max_current, uint8_t *enable){
-	*desired_current = 0;
+void set_inv_disabled(float *max_current, uint8_t *enable){
 	*max_current = 0;
 	*enable = 0;
 }
