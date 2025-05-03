@@ -15,23 +15,46 @@
 //Change based --> vcuPedalPosition1Fault_state, vcuPedalPosition2Fault_state, vcuBrakePressureSensorFault_state, vcuTractiveSystemCurrentSensorFault_state
 // vcuPedalPositionCorrelationFault_state, vcuPedalPositionBrakingFault_state
 
-FLOAT_CAN_STRUCT *periodic_float_params[] = {&pedalPosition1_percent, &pedalPosition2_percent,
-											 &wheelSpeedFrontLeft_mph, &wheelSpeedRearRight_mph};
-U8_CAN_STRUCT *periodic_U8_params[] = {};
+FLOAT_CAN_STRUCT *periodic_float_params[] = {
+	&pedalPosition1_percent,
+	&pedalPosition2_percent,
+	&brakePressureFront_psi,
+	&steeringAngle_deg,
+	&rideHeightFront_mm,
+	&fvcTemp_C,
+	&displayFaultStatus_state,
+	&pedalPosition1_mm,
+	&pedalPosition2_mm,
+	&brakeTempFrontLeft_C,
+	&brakeTempFrontRight_C,
+	&shockPosFrontLeft_mm,
+	&shockPosFrontRight_mm
+	&wheelSpeedFrontLeft_mph,
+	&wheelSpeedFrontRight_mph,
+};
+
+U8_CAN_STRUCT *periodic_U8_params[] = {
+	&vehicleState_state,
+	&vcuState_state,
+	&vcuMcuStatus_state,
+	&currentlyMoving_state,
+	&FVC_SDC_Fault_1_state,
+	&FVC_SDC_Fault_2_state,
+};
 uint8_t float_params_len = sizeof(periodic_float_params)/sizeof(periodic_float_params[0]);
 uint8_t U8_params_len = sizeof(periodic_U8_params)/sizeof(periodic_U8_params[0]);
 
 void update_periodic_CAN_params(){
 	update_pedal_percent();
-//	for(int i = 0; i < float_params_len; i++){
-//		update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
-//	}
-//
-//	for(int i = 0; i < U8_params_len; i++){
-//		update_and_queue_param_u8(periodic_U8_params[i], periodic_float_params[i]->data);
-//	}
+	for(int i = 0; i < float_params_len; i++){
+		update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
+	}
 
-	update_and_queue_param_float(&desiredInvCurrentPeakToPeak_A, 125);
+	for(int i = 0; i < U8_params_len; i++){
+		update_and_queue_param_u8(periodic_U8_params[i], periodic_float_params[i]->data);
+	}
+
+
 }
 
 void update_fault_state(U8_CAN_STRUCT *param, uint8_t state, uint8_t last_state){
@@ -39,15 +62,14 @@ void update_fault_state(U8_CAN_STRUCT *param, uint8_t state, uint8_t last_state)
 		update_and_queue_param_u8(param, state);
 }
 
-void update_inverter_params(uint8_t vehicle_state, float desired_current, float max_current, uint8_t enable){
-	//update global vehicle state, enable, desired/max current, ready to drive buzzer
+void update_inverter_params(uint8_t vehicle_state, float desired_current, float max_current, float max_dc_current, uint8_t enable){
+	//update global vehicle state, enable, desired/max current, dc max current
 	update_and_queue_param_u8(&vehicleState_state, vehicle_state);
-	if(vehicle_state == VEHICLE_PREDRIVE)
-		update_and_queue_param_u8(&vehicleBuzzerOn_state, TRUE);
-
-	update_and_queue_param_float(&desiredInvCurrentPeakToPeak_A, desired_current);
+	update_and_queue_param_float(&desiredInvCurrentPeak_A, desired_current);
 	update_and_queue_param_float(&maxCurrentLimitPeakToPeak_A, max_current);
+	update_and_queue_param_float(&maxDCCurrentLimit_A, max_dc_current);
 	update_and_queue_param_u8(&driveEnable_state, enable);
+
 }
 
 void update_pedal_percent(){

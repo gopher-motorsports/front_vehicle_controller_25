@@ -8,6 +8,7 @@
 #include "FVC.h"
 #include "sensor_and_CAN.h"
 #include "conditions_and_utils.h"
+#include "fvc_software_faults.h"
 
 uint8_t driving_mode = NORMAL_MODE;
 uint8_t predrive_button = RELEASED;
@@ -53,14 +54,50 @@ uint8_t is_vechile_faulting(){
 	//out of range faults on FVC and RVC
 	//add overcurrent fautls for FVC sensors
 	//add over
-	uint8_t fault_tripped = vcuPedalPosition1Fault_state.data;
-	fault_tripped |= vcuPedalPosition2Fault_state.data;
-	fault_tripped |= vcuBrakePressureSensorFault_state.data;
-	fault_tripped |= vcuTractiveSystemCurrentSensorFault_state.data;
-	fault_tripped |= vcuPedalPositionCorrelationFault_state.data;
+
+	//pulled high when a fault is tripped, intialized to 0
+	uint8_t fault_tripped = 0;
+
+	SOFTWARE_FAULT* fault;
+	for(int i = 0; i < NUM_OF_TIMED_FAULTS; i++){
+		fault = TIMED_SOFTWARE_FAULTS[i];
+		if(fault->data > fault->max_threshold || fault->data < fault->min_threshold){ //correlation has no min, but edge case accounted for in defines
+			fault->fault_timer++;
+			if(fault->fault_timer > fault->input_delay_threshold){
+				fault->fault_timer = fault->input_delay_threshold + 1; //cap at delay_threshold + 1 so that it trips but doesn't count up more
+			}
+		}
+		else{
+			fault->fault_timer = 0;
+			fault->state = false;
+		}
+
+		if(fault->fault_timer > fault->input_delay_threshold){
+			fault->state = true;
+		}
+
+		fault_tripped |= fault->state;
+	}
+
+
+	// APPS/Brake Plausibility Fault (both pedals pushed)
 	fault_tripped |= vcuPedalPositionBrakingFault_state.data;
 
+	// BSPD Tractive Brake Fault tripped(if this lasts for .5s car the BSPD fault is tripped and HV is shut off)
+	fault_tripped |= bspdTractiveSystemBrakingFault_state.data;
+
 	return fault_tripped;
+}
+
+float calculate_dc_current_limit(){
+	float dc_current_limit_A = 0;
+
+	if(inputInverterVoltage_V.data != 0) {
+		//stay below 5 kW I = P/V
+		dc_current_limit_A = bspd_power_limit / inputInverterVoltage_V.data;
+	}
+
+	return dc_current_limit_A;
 }
 
 void set_inv_disabled(float *desired_current, float *max_current, uint8_t *enable){
