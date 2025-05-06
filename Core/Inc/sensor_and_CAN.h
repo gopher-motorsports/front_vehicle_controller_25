@@ -14,6 +14,6 @@ void update_pedal_percent();
 void calculate_rpm();
 float boundary_check(float data, float min, float max);
 void update_display_fault_status();
-
+void update_sdc_params();
 
 #endif /* INC_SENSOR_AND_CAN_H_ */

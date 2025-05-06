@@ -46,6 +46,7 @@ uint8_t U8_params_len = sizeof(periodic_U8_params)/sizeof(periodic_U8_params[0])
 
 void update_periodic_CAN_params(){
 	update_pedal_percent();
+	update_sdc_params();
 	for(int i = 0; i < float_params_len; i++){
 		//update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
 	}
@@ -117,4 +118,11 @@ void update_display_fault_status() {
 			) status = VCU_FAULT;
 
 	update_and_queue_param_u8(&displayFaultStatus_state, status);
+}
+
+void update_sdc_params(){
+	FVC_SDC_Fault_1_state.data = HAL_GPIO_ReadPin(SDC1_MCU_GPIO_Port, SDC1_MCU_Pin);
+	FVC_SDC_Fault_2_state.data = HAL_GPIO_ReadPin(SDC2_MCU_GPIO_Port, SDC2_MCU_Pin);
+	update_and_queue_param_u8(&FVC_SDC_Fault_1_state, FVC_SDC_Fault_1_state.data);
+	update_and_queue_param_u8(&FVC_SDC_Fault_2_state, FVC_SDC_Fault_2_state.data);
 }
