@@ -8,27 +8,27 @@ buckets:
         parameters:
             pedalPosition1_mm: #connector pin 19, mcu pin 21
                 ADC: ADC1_IN5
-                sensor: full_raw_voltage_sensor #linear_pos_sensor_25
+                sensor: linear_pos_sensor_25 #linear_pos_sensor_25
                 samples_buffered: 1
             pedalPosition2_mm: #connector pin 20, mcu pin 22
                 ADC: ADC1_IN6
-                sensor: full_raw_voltage_sensor
+                sensor: linear_pos_sensor_25
                 samples_buffered: 1
             brakePressureFront_psi: #connector pin 26, mcu pin 8
                 ADC: ADC1_IN10
-                sensor: full_raw_voltage_sensor
+                sensor: brake_pressure_sensor
                 samples_buffered: 1
             brakeTempFrontLeft_C: #connector pin 21, mcu pin 20
                 ADC: ADC1_IN4
-                sensor: full_raw_voltage_sensor
+                sensor: brake_temp_sensor
                 samples_buffered: 1
             brakeTempFrontRight_C: #connector pin 22, mcu pin 17
                 ADC: ADC1_IN3
-                sensor: full_raw_voltage_sensor
+                sensor: brake_temp_sensor
                 samples_buffered: 1   
             steeringAngle_deg: #connector pin 25, mcu pin 9
                 ADC: ADC1_IN11
-                sensor: full_raw_voltage_sensor
+                sensor: steering_angle_sensor
                 samples_buffered: 1
             rideHeightFront_mm: #connector pin 18, mcu pin 23
                 ADC: ADC1_IN7
@@ -36,11 +36,11 @@ buckets:
                 samples_buffered: 1
             shockPosFrontLeft_mm: #connector pin 23, mcu pin 11
                 ADC: ADC1_IN13
-                sensor: full_raw_voltage_sensor
+                sensor: front_left_shock_pos
                 samples_buffered: 1
             shockPosFrontRight_mm: #connector pin 24, mcu pin 10
                 ADC: ADC1_IN12
-                sensor: full_raw_voltage_sensor
+                sensor: front_right_shock_pos
                 samples_buffered: 1    
             pedalPosition1_percent: 
                 ADC: NON_ADC
