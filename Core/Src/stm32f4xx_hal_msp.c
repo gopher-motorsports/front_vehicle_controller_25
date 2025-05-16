@@ -104,7 +104,6 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
 
     __HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_GPIOB_CLK_ENABLE();
     /**ADC1 GPIO Configuration
     PC0     ------> ADC1_IN10
     PC1     ------> ADC1_IN11
@@ -115,27 +114,17 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
     PA5     ------> ADC1_IN5
     PA6     ------> ADC1_IN6
     PA7     ------> ADC1_IN7
-    PC4     ------> ADC1_IN14
-    PC5     ------> ADC1_IN15
-    PB0     ------> ADC1_IN8
-    PB1     ------> ADC1_IN9
     */
-    GPIO_InitStruct.Pin = VoltSen5V_1_Pin|VoltSen5V_2_Pin|VoltSen5V_3_Pin|VoltSen5V_4_Pin
-                          |SalenKey_Pin|AVoltSen5V_1_Pin;
+    GPIO_InitStruct.Pin = Brake_Pressure_Front_Pin|Steering_Angle_Pin|Shock_Right_FR_Pin|Shock_Pot_FL_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = VoltSen5V_5_Pin|VoltSen5V_6_Pin|APPS1_Pin|APPS2_Pin
-                          |RideHeight_Pin;
+    GPIO_InitStruct.Pin = Brake_Temp_FR_Pin|Brake_Temp_FL_Pin|APPS1_Pin|APPS2_Pin
+                          |Ride_Height_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = AVoltSen5V_2_Pin|AVoltSen5V_3_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     /* ADC1 DMA Init */
     /* ADC1 Init */
@@ -189,18 +178,11 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
     PA5     ------> ADC1_IN5
     PA6     ------> ADC1_IN6
     PA7     ------> ADC1_IN7
-    PC4     ------> ADC1_IN14
-    PC5     ------> ADC1_IN15
-    PB0     ------> ADC1_IN8
-    PB1     ------> ADC1_IN9
     */
-    HAL_GPIO_DeInit(GPIOC, VoltSen5V_1_Pin|VoltSen5V_2_Pin|VoltSen5V_3_Pin|VoltSen5V_4_Pin
-                          |SalenKey_Pin|AVoltSen5V_1_Pin);
+    HAL_GPIO_DeInit(GPIOC, Brake_Pressure_Front_Pin|Steering_Angle_Pin|Shock_Right_FR_Pin|Shock_Pot_FL_Pin);
 
-    HAL_GPIO_DeInit(GPIOA, VoltSen5V_5_Pin|VoltSen5V_6_Pin|APPS1_Pin|APPS2_Pin
-                          |RideHeight_Pin);
-
-    HAL_GPIO_DeInit(GPIOB, AVoltSen5V_2_Pin|AVoltSen5V_3_Pin);
+    HAL_GPIO_DeInit(GPIOA, Brake_Temp_FR_Pin|Brake_Temp_FL_Pin|APPS1_Pin|APPS2_Pin
+                          |Ride_Height_Pin);
 
     /* ADC1 DMA DeInit */
     HAL_DMA_DeInit(hadc->DMA_Handle);
