@@ -38,8 +38,8 @@ U8_CAN_STRUCT *periodic_U8_params[] = {
 	&fvcState_state,
 	&fvcMcuStatus_state,
 	&currentlyMoving_state,
-	&FVC_SDC_Fault_1_state,
-	&FVC_SDC_Fault_2_state,
+	&sdcStatus3,
+	&sdcStatus4,
 };
 uint8_t float_params_len = sizeof(periodic_float_params)/sizeof(periodic_float_params[0]);
 uint8_t U8_params_len = sizeof(periodic_U8_params)/sizeof(periodic_U8_params[0]);
