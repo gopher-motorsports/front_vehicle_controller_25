@@ -121,8 +121,9 @@ void update_display_fault_status() {
 }
 
 void update_sdc_params(){
-	FVC_SDC_Fault_1_state.data = HAL_GPIO_ReadPin(SDC1_MCU_GPIO_Port, SDC1_MCU_Pin);
-	FVC_SDC_Fault_2_state.data = HAL_GPIO_ReadPin(SDC2_MCU_GPIO_Port, SDC2_MCU_Pin);
-	update_and_queue_param_u8(&FVC_SDC_Fault_1_state, FVC_SDC_Fault_1_state.data);
-	update_and_queue_param_u8(&FVC_SDC_Fault_2_state, FVC_SDC_Fault_2_state.data);
+	sdcStatus3.data = HAL_GPIO_ReadPin(SDC1_MCU_GPIO_Port, SDC1_MCU_Pin);
+	sdcStatus4.data = HAL_GPIO_ReadPin(SDC2_MCU_GPIO_Port, SDC2_MCU_Pin);
+	update_and_queue_param_u8(&sdcStatus3, sdcStatus3.data);
+	update_and_queue_param_u8(&sdcStatus4, sdcStatus4.data);
+}
 }

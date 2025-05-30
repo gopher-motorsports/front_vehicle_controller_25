@@ -106,11 +106,11 @@ buckets:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
-            FVC_SDC_Fault_1_state:
+            sdcStatus3: #previously FVC_SDC_Fault_1_state
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
-            FVC_SDC_Fault_2_state:
+            sdcStatus4: #previously FVC_SDC_Fault_2_state
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
