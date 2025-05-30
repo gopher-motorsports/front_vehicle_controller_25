@@ -99,26 +99,26 @@ float boundary_check(float data, float min, float max){
 	return data;
 }
 
-void update_display_fault_status() {
-	int status = NONE;
-	if(amsFault_state.data) status = AMS_FAULT;
-	else if (vehicle_state == VEHICLE_FAULT) status = INVERTER_FAULT;
-	else if(bmsNumActiveAlerts_state.data) status = BMS_FAULT;
-	else if(fvcPedalPositionBrakingFault_state.data) status = RELEASE_PEDAL;
-	else if((bspdTractiveSystemBrakingFault_state.data || fvcBrakingClampingCurrent_state.data) && (!BYPASS_ACTIVE)) status = BRAKING_FAULT;
-	else if(fvcPedalPositionCorrelationFault_state.data) status = APPS_FAULT;
-	else if((bspdFault_state.data
-			|| bspdBrakePressureSensorFault_state.data
-			|| bspdTractiveSystemCurrentSensorFault_state.data)
-			&& (!BYPASS_ACTIVE)) status = BSPD_FAULT;
-	else if((fvcBrakePressureSensorFault_state.data
-			|| fvcPedalPosition1Fault_state.data
-			|| fvcPedalPosition2Fault_state.data
-			|| fvcTractiveSystemCurrentSensorFault_state.data) && (!BYPASS_ACTIVE)
-			) status = VCU_FAULT;
-
-	update_and_queue_param_u8(&displayFaultStatus_state, status);
-}
+//void update_display_fault_status() {
+//	int status = NONE;
+//	if(amsFault_state.data) status = AMS_FAULT;
+//	else if (vehicle_state == VEHICLE_FAULT) status = INVERTER_FAULT;
+//	else if(bmsNumActiveAlerts_state.data) status = BMS_FAULT;
+//	else if(fvcPedalPositionBrakingFault_state.data) status = RELEASE_PEDAL;
+//	else if((bspdTractiveSystemBrakingFault_state.data || fvcBrakingClampingCurrent_state.data) && (!BYPASS_ACTIVE)) status = BRAKING_FAULT;
+//	else if(fvcPedalPositionCorrelationFault_state.data) status = APPS_FAULT;
+//	else if((bspdFault_state.data
+//			|| bspdBrakePressureSensorFault_state.data
+//			|| bspdTractiveSystemCurrentSensorFault_state.data)
+//			&& (!BYPASS_ACTIVE)) status = BSPD_FAULT;
+//	else if((fvcBrakePressureSensorFault_state.data
+//			|| fvcPedalPosition1Fault_state.data
+//			|| fvcPedalPosition2Fault_state.data
+//			|| fvcTractiveSystemCurrentSensorFault_state.data) && (!BYPASS_ACTIVE)
+//			) status = VCU_FAULT;
+//
+//	update_and_queue_param_u8(&displayFaultStatus_state, status);
+//}
 
 void update_sdc_params(){
 	sdcStatus3.data = HAL_GPIO_ReadPin(SDC1_MCU_GPIO_Port, SDC1_MCU_Pin);
@@ -126,4 +126,4 @@ void update_sdc_params(){
 	update_and_queue_param_u8(&sdcStatus3, sdcStatus3.data);
 	update_and_queue_param_u8(&sdcStatus4, sdcStatus4.data);
 }
-}
+

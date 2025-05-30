@@ -58,7 +58,6 @@ void main_loop() {
 
 	update_periodic_CAN_params();
 	process_inverter();
-	update_display_fault_status();
 	LED_task();
 }
 
