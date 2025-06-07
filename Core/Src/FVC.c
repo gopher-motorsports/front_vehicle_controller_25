@@ -20,7 +20,11 @@
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_tim.h"
 
-CAN_HandleTypeDef* hcan;
+extern CAN_HandleTypeDef hcan1;
+extern CAN_HandleTypeDef hcan2;
+
+//CAN_HandleTypeDef* hcan;
+
 uint32_t preDriveTimer_ms = 0;
 
 float desiredCurrent_A = 0;
@@ -47,11 +51,13 @@ LAUNCH_CONTROL_STATES_t launch_control_state = LAUNCH_CONTROL_DISABLED;
 
 // Initialization code goes here
 
-void init(CAN_HandleTypeDef* hcan_ptr) {
-	hcan = hcan_ptr;
-
-	init_can(hcan, GCAN0);
-}
+//void init(CAN_HandleTypeDef* hcan_ptr) {
+//	hcan = hcan_ptr;
+//	//init_can(&hcan1, GCAN0);
+//	//init_can(&hcan2, GCAN1);
+//
+//	init_can(hcan, GCAN0);
+//}
 float motor_temp = 0;
 
 void main_loop() {
@@ -73,7 +79,10 @@ void can_buffer_handling_loop()
 	}
 
 	// Handle the transmission hardware for each CAN bus
-	service_can_tx(hcan);
+	//service_can_tx(hcan);
+	service_can_tx(&hcan1);
+	service_can_tx(&hcan2);
+	service_can_rx_buffer();
 }
 
 void determine_current_parameters(){

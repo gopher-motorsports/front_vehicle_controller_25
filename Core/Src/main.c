@@ -131,7 +131,8 @@ int main(void)
   MX_UART4_Init();
   /* USER CODE BEGIN 2 */
 
-  init(&hcan1);
+  init_can(&hcan1, GCAN0);
+  init_can(&hcan2, GCAN1);
   gsense_init(&hcan1, &hadc1, NULL, NULL, &htim10, Gsense_GPIO_Port, Gsense_Pin);
   /* USER CODE END 2 */
 
