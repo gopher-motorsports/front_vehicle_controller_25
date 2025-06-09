@@ -33,7 +33,7 @@ void check_button_inputs(){
 	//if ready to drive button was pressed --> go into predrive
 	//if slow mode button was pressed --> change current limit to slow mode
 	static uint8_t last_slow_mode_button = 0;
-	predrive_button = swButon5_state.data;
+	predrive_button = swButon5_state.data; //TODO this is a place holder button
 
 	if((last_slow_mode_button == 0) || (swButon4_state.data == 1)){
 		driving_mode = !driving_mode;
@@ -50,10 +50,6 @@ uint8_t predrive_conditions_met(){
 }
 
 uint8_t is_vechile_faulting(){
-	//check if active: BSPD fault, appsBrakeLatched, Sensors power over current
-	//out of range faults on FVC and RVC
-	//add overcurrent fautls for FVC sensors
-	//add over
 
 	//pulled high when a fault is tripped, intialized to 0
 	uint8_t fault_tripped = 0;
@@ -79,9 +75,18 @@ uint8_t is_vechile_faulting(){
 		fault_tripped |= fault->state;
 	}
 
+	//input fault = rear brake pressure or current sensor out of range
+	fault_tripped |= bspdInputFault_state.data;
 
 	// APPS/Brake Plausibility Fault (both pedals pushed)
-	fault_tripped |= fvcPedalPositionBrakingFault_state.data;
+	boolean appsBrakeLatched_state;
+	if(brakePressureFront_psi.data > APPS_BRAKE_PRESS_THRESH_psi && pedalPosition1_percent.data > 25) {
+		appsBrakeLatched_state = TRUE;
+	} else if (pedalPosition1_percent.data <= 5) {
+		appsBrakeLatched_state = FALSE;
+	}
+
+	fault_tripped |= appsBrakeLatched_state;
 
 	return fault_tripped;
 }

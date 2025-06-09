@@ -51,23 +51,15 @@ buckets:
                 sensor: NON_ADC
                 samples_buffered: 1
 
-            wheelSpeedFrontLeft_mph: 
+            wheelSpeedFrontLeft_mph: #connector pin 14, MCU PA0
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
-            wheelSpeedFrontRight_mph:
+            wheelSpeedFrontRight_mph: #connector pin 15, MCU PA1
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1   
-
-
-
-    # low_frequency_fvc:
-    #     frequency_hz: 10
-    #     parameters:
-
             
-
     low_frequency_fvc_but_faster:
         frequency_hz: 100
         parameters:
@@ -94,14 +86,7 @@ buckets:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
-            # brakeLightOn_state:
-            #     ADC: NON_ADC
-            #     sensor: NON_ADC
-            #     samples_buffered: 1
-            # vehicleBuzzerOn_state:
-            #     ADC: NON_ADC
-            #     sensor: NON_ADC
-            #     samples_buffered: 1
+
             currentlyMoving_state:
                 ADC: NON_ADC
                 sensor: NON_ADC

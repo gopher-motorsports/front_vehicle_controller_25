@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "gopher_sense.h"
 #include "FVC.h"
+#include "pulse_sensor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -33,6 +34,16 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define IC_TIMER &htim2
+#define HDMA_CHANNEL 1
+
+ //(X pulses / 1 sec) * (3600 sec / 1 hr) * (1 rev / 30 pulses) * ([wheel diameter * pi] in / 1 rev) * (1 mile/63360 in)
+#define CONVERSION_RATIO 0.0595f
+#define DMA_STOPPED_TIMEOUT_MS 1000
+#define USE_VAR_SS true
+#define LOW_SAMPLES 100
+#define HIGH_SAMPLES 1000
+#define MIN_SAMPLES 5
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -134,6 +145,30 @@ int main(void)
   init_can(&hcan1, GCAN0);
   init_can(&hcan2, GCAN1);
   gsense_init(&hcan1, &hadc1, NULL, NULL, &htim10, Gsense_GPIO_Port, Gsense_Pin);
+  setup_pulse_sensor_vss(
+      		  &htim2,
+       		  TIM_CHANNEL_1,
+       		  CONVERSION_RATIO,
+       		  &(wheelSpeedFrontLeft_mph.data),
+      		  DMA_STOPPED_TIMEOUT_MS,
+       		  USE_VAR_SS,
+       		  LOW_SAMPLES,
+       		  HIGH_SAMPLES,
+      		  MIN_SAMPLES,
+      		  64
+         );
+  setup_pulse_sensor_vss(
+			  &htim2,
+			  TIM_CHANNEL_2,
+			  CONVERSION_RATIO,
+			  &(wheelSpeedFrontRight_mph.data),
+			  DMA_STOPPED_TIMEOUT_MS,
+			  USE_VAR_SS,
+			  LOW_SAMPLES,
+			  HIGH_SAMPLES,
+			  MIN_SAMPLES,
+			  64
+          );
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
