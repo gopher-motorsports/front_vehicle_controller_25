@@ -32,13 +32,14 @@ int get_max_current_limit(){
 void check_button_inputs(){
 	//if ready to drive button was pressed --> go into predrive
 	//if slow mode button was pressed --> change current limit to slow mode
-	static uint8_t last_slow_mode_button = 0;
-	predrive_button = swButon5_state.data; //TODO this is a place holder button
+	predrive_button = swButon4_state.data; //TODO this is a place holder button
 
-	if((last_slow_mode_button == 0) || (swButon4_state.data == 1)){
-		driving_mode = !driving_mode;
-	}
-	last_slow_mode_button = swButon4_state.data;
+//	slow mod code removed
+//  static uint8_t last_slow_mode_button = 0;
+//	if((last_slow_mode_button == 0) || (swButon4_state.data == 1)){
+//		driving_mode = !driving_mode;
+//	}
+//	last_slow_mode_button = swButon4_state.data;
 }
 
 uint8_t predrive_conditions_met(){
