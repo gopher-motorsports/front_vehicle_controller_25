@@ -102,6 +102,10 @@ void process_inverter() {
 	if(vehicle_state != VEHICLE_DRIVING)
 		set_inv_disabled(&maxcurrentLimit_A, &inverter_enable_state);
 
+	if(faultCode.data != INVERTER_NO_FAULT) {
+		vehicle_state = VEHICLE_FAULT;
+	}
+
 	switch (vehicle_state)
 	{
 	case VEHICLE_NO_COMMS:
@@ -115,7 +119,7 @@ void process_inverter() {
 
 	case VEHICLE_FAULT:
 		//check to see if fault goes away
-		if(faultCode.data == 0x00) {
+		if(faultCode.data == INVERTER_NO_FAULT) {
 			vehicle_state = VEHICLE_NO_COMMS;
 		}
 

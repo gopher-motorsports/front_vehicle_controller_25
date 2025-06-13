@@ -31,12 +31,12 @@
 //#define APPS_MIN_ERROR_POS_mm 1.0f // position where the error begins
 //#define APPS_TOTAL_TRAVEL_mm ( APPS_MAX_TORQUE_POS_mm - APPS_MIN_TORQUE_POS_mm )
 
-#define APPS_1_MAX_CURRENT_POS_mm  21.5f // The position of the pedal at 100% torque
-#define APPS_1_MIN_CURRENT_POS_mm  5.0f  // The position of the pedal at 0% torque
-#define APPS_2_MAX_CURRENT_POS_mm  22.0f // The position of the pedal at 100% torque
-#define APPS_2_MIN_CURRENT_POS_mm  5.5f  // The position of the pedal at 0% torque
-#define APPS_MAX_ERROR_POS_mm 25.1f // position where the error begins, check back on this
-#define APPS_MIN_ERROR_POS_mm .65f // position where the error begins
+#define APPS_1_MAX_CURRENT_POS_mm  21.61f // The position of the pedal at 100% torque
+#define APPS_1_MIN_CURRENT_POS_mm  6.18f  // The position of the pedal at 0% torque
+#define APPS_2_MAX_CURRENT_POS_mm  19.53f // The position of the pedal at 100% torque
+#define APPS_2_MIN_CURRENT_POS_mm  3.94f  // The position of the pedal at 0% torque
+#define APPS_MAX_ERROR_POS_mm 23.00f // position where the error begins, check back on this
+#define APPS_MIN_ERROR_POS_mm 1.00f  // position where the error begins
 #define APPS_1_TOTAL_TRAVEL_mm ( APPS_1_MAX_CURRENT_POS_mm - APPS_1_MIN_CURRENT_POS_mm )
 #define APPS_2_TOTAL_TRAVEL_mm ( APPS_2_MAX_CURRENT_POS_mm - APPS_2_MIN_CURRENT_POS_mm )
 // ==============================================================================================
@@ -51,7 +51,7 @@
 #define PREDRIVE_BUTTON_PRESSED    1    // The value of the button parameter when pressed
 #define PREDRIVE_TIME_ms           2000 // The length of predrive in ms
 #define RTD_BUTTON_PUSHED          (GPIO_PIN_RESET)
-#define TS_ON_THRESHOLD_VOLTAGE_V  190
+#define TS_ON_THRESHOLD_VOLTAGE_V  40
 // ==============================================================================================
 
 
@@ -95,6 +95,7 @@
 #define INVERTER_LOCKOUT        0x80   // Lockout is bit 7 of byte 6
 #define INVERTER_CMD_ID         0x0C0  // The CAN ID of the inverter command
 #define INVERTER_PARAM_ID       0x0C1  // The CAN ID of the parameter message
+#define INVERTER_NO_FAULT       0x000  // The data of the fault code when there is no inverter fault
 #define PARAM_CMD_FAULT_CLEAR   20     // Address of the fault clear parameter
 #define PARAM_CMD_READ          0      // Value to send in parameter command to read value
 #define PARAM_CMD_WRITE         1      // Value to send in parameter command to read value

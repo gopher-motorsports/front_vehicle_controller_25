@@ -24,9 +24,9 @@ void LED_task(){
 //Get Desired Current Limit
 int get_max_current_limit(){
 	if(driving_mode == SLOW_MODE)
-		return 110; // 100 Apk, 1/5 the speed
+		return 10; // 100 Apk, 1/5 the speed
 	else
-		return 550; // 550 Apk
+		return 10; // 550 Apk
 }
 
 void check_button_inputs(){
@@ -42,6 +42,8 @@ void check_button_inputs(){
 }
 
 uint8_t predrive_conditions_met(){
+	check_button_inputs();
+
 	uint8_t conditions_met = brakePressureFront_psi.data > PREDRIVE_BRAKE_THRESH_psi;
 	conditions_met &= (predrive_button == PRESSED);
 	conditions_met &= (inputInverterVoltage_V.data > TS_ON_THRESHOLD_VOLTAGE_V);
@@ -111,7 +113,7 @@ void set_inv_disabled(float *max_current, uint8_t *enable){
 
 float calculate_desired_current(){
 	float desired_current = ((pedalPosition1_mm.data-APPS_1_MIN_CURRENT_POS_mm)/APPS_1_TOTAL_TRAVEL_mm) * get_max_current_limit();
-	desired_current = boundary_check(desired_current, APPS_1_MIN_CURRENT_POS_mm, get_max_current_limit());
+	desired_current = boundary_check(desired_current, 0, get_max_current_limit());
 	return desired_current;
 }
 

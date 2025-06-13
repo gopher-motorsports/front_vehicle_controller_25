@@ -70,6 +70,8 @@ void update_inverter_params(uint8_t vehicle_state, float desired_current, float 
 	update_and_queue_param_float(&maxCurrentLimitPeak_A, max_current);
 	update_and_queue_param_float(&maxDCCurrentLimit_A, max_dc_current);
 	update_and_queue_param_u8(&driveEnable_state, enable);
+	send_group(driveEnable_state.info.GROUP_ID);
+	send_group(desiredInvCurrentPeak_A.info.GROUP_ID);
 
 }
 
