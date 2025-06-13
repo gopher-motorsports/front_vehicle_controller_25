@@ -58,7 +58,7 @@ buckets:
             wheelSpeedFrontRight_mph: #connector pin 15, MCU PA1
                 ADC: NON_ADC
                 sensor: NON_ADC
-                samples_buffered: 1   
+                samples_buffered: 1
             
     low_frequency_fvc_but_faster:
         frequency_hz: 100

@@ -49,7 +49,7 @@
 // ================================== READY TO DRIVE PARAMETERS =================================
 #define PREDRIVE_BRAKE_THRESH_psi  10  // The minimum brake pressure to enter the driving state
 #define PREDRIVE_BUTTON_PRESSED    1    // The value of the button parameter when pressed
-#define PREDRIVE_TIME_ms           2000 // The length of predrive in ms
+#define PREDRIVE_TIME_ms           0 // The length of predrive in ms
 #define RTD_BUTTON_PUSHED          (GPIO_PIN_RESET)
 #define TS_ON_THRESHOLD_VOLTAGE_V  40
 // ==============================================================================================
@@ -127,6 +127,7 @@
 #define NORMAL_MODE 0
 #define SLOW_MODE 1
 // ======================================== I/O PARAMETERS ======================================
+#define PREDRIVE_BUTTON_PARAM swButon5_state
 #define MOSFET_PULL_DOWN_ON (GPIO_PIN_SET)
 #define MOSFET_PULL_DOWN_OFF (GPIO_PIN_RESET)
 #define PRESSED 1

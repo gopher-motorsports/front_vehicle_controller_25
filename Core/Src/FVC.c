@@ -40,14 +40,13 @@ boolean current_mode_button_state = 0;
 boolean past_mode_button_state = 0;
 
 VEHICLE_STATE_t vehicle_state = VEHICLE_NO_COMMS;
-U8 inverter_enable_state = INVERTER_DISABLE;
 boolean vehicle_currently_moving = 0;
 LAUNCH_CONTROL_STATES_t launch_control_state = LAUNCH_CONTROL_DISABLED;
 
 
 #define HBEAT_LED_DELAY_TIME_ms 500
 #define RTD_DEBOUNCE_TIME_ms 25
-//#define SET_INV_DISABLED() do{ desiredCurrent_A = 0; maxcurrentLimit_A = MAX_TEST_CMD_CURRENT_A; inverter_enable_state = INVERTER_DISABLE; } while(0)
+//#define SET_INV_DISABLED() desiredCurrent_A = 0; maxcurrentLimit_A = MAX_TEST_CMD_CURRENT_A;
 
 // Initialization code goes here
 
@@ -61,7 +60,6 @@ LAUNCH_CONTROL_STATES_t launch_control_state = LAUNCH_CONTROL_DISABLED;
 float motor_temp = 0;
 
 void main_loop() {
-
 	update_periodic_CAN_params();
 	process_inverter();
 	LED_task();
@@ -93,18 +91,19 @@ void determine_current_parameters(){
 
 void process_inverter() {
 
-	/*if(faultCode.data != 0x00) {
+	if((HAL_GetTick() -  driveEnableInvStatus_state.info.last_rx) > INVERTER_TIMEOUT_ms) {
+		vehicle_state = VEHICLE_NO_COMMS;
+	} else if(faultCode.data != INVERTER_NO_FAULT) {
 		vehicle_state = VEHICLE_FAULT;
-	}*/
+	}
 
 	determine_current_parameters();
 
-	if(vehicle_state != VEHICLE_DRIVING)
-		set_inv_disabled(&maxcurrentLimit_A, &inverter_enable_state);
-
-	if(faultCode.data != INVERTER_NO_FAULT) {
-		vehicle_state = VEHICLE_FAULT;
+	// TODO: Delete?
+	if(vehicle_state != VEHICLE_DRIVING) {
+		set_inv_disabled(&maxcurrentLimit_A, NULL);
 	}
+
 
 	switch (vehicle_state)
 	{
@@ -143,14 +142,9 @@ void process_inverter() {
 		break;
 
 	case VEHICLE_DRIVING:
-		if(inputInverterVoltage_V.data < TS_ON_THRESHOLD_VOLTAGE_V){
-			vehicle_state = VEHICLE_NO_COMMS;
-		}
-		// vehcile in driving state
 #ifdef USING_LAUNCH_CONTROL
 		launch_control_sm();
 #endif
-		inverter_enable_state = INVERTER_ENABLE;
 		break;
 
 	default:
@@ -160,7 +154,7 @@ void process_inverter() {
 	}
 
 	// send the current request
-	update_inverter_params(vehicle_state, desiredCurrent_A, maxcurrentLimit_A, dc_currentlimit_A, inverter_enable_state);
+	update_inverter_params(vehicle_state, desiredCurrent_A, maxcurrentLimit_A, 200, vehicle_state == VEHICLE_DRIVING);
 }
 
 

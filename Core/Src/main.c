@@ -62,6 +62,7 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim10;
+TIM_HandleTypeDef htim11;
 DMA_HandleTypeDef hdma_tim2_ch1;
 DMA_HandleTypeDef hdma_tim2_ch2_ch4;
 DMA_HandleTypeDef hdma_tim2_up_ch3;
@@ -88,6 +89,7 @@ static void MX_CAN1_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_UART4_Init(void);
+static void MX_TIM11_Init(void);
 void task_MainTask(void const * argument);
 void task_BufferHandling(void const * argument);
 
@@ -140,6 +142,7 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM3_Init();
   MX_UART4_Init();
+  MX_TIM11_Init();
   /* USER CODE BEGIN 2 */
 
   init_can(&hcan1, GCAN0);
@@ -644,6 +647,37 @@ static void MX_TIM10_Init(void)
   /* USER CODE BEGIN TIM10_Init 2 */
 
   /* USER CODE END TIM10_Init 2 */
+
+}
+
+/**
+  * @brief TIM11 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM11_Init(void)
+{
+
+  /* USER CODE BEGIN TIM11_Init 0 */
+
+  /* USER CODE END TIM11_Init 0 */
+
+  /* USER CODE BEGIN TIM11_Init 1 */
+
+  /* USER CODE END TIM11_Init 1 */
+  htim11.Instance = TIM11;
+  htim11.Init.Prescaler = 200;
+  htim11.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim11.Init.Period = 65535;
+  htim11.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim11.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim11) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM11_Init 2 */
+
+  /* USER CODE END TIM11_Init 2 */
 
 }
 

@@ -48,7 +48,7 @@ void update_periodic_CAN_params(){
 	update_pedal_percent();
 	update_sdc_params();
 	for(int i = 0; i < float_params_len; i++){
-		//update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
+//		update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
 	}
 
 	for(int i = 0; i < U8_params_len; i++){
@@ -70,6 +70,8 @@ void update_inverter_params(uint8_t vehicle_state, float desired_current, float 
 	update_and_queue_param_float(&maxCurrentLimitPeak_A, max_current);
 	update_and_queue_param_float(&maxDCCurrentLimit_A, max_dc_current);
 	update_and_queue_param_u8(&driveEnable_state, enable);
+
+	// We have to send group here to prevent timeout because GCAN won't update values if they're the same
 	send_group(driveEnable_state.info.GROUP_ID);
 	send_group(desiredInvCurrentPeak_A.info.GROUP_ID);
 
@@ -77,10 +79,10 @@ void update_inverter_params(uint8_t vehicle_state, float desired_current, float 
 
 void update_pedal_percent(){
 	float pedal_pos1_percent = 100.0*(pedalPosition1_mm.data-APPS_1_MIN_CURRENT_POS_mm)/APPS_1_TOTAL_TRAVEL_mm;
-	pedalPosition1_percent.data = boundary_check(pedal_pos1_percent, 0.0, 100.0);
+	pedalPosition1_percent.data = clamp(pedal_pos1_percent, 0.0, 100.0);
 
 	float pedal_pos2_percent = 100.0*(pedalPosition2_mm.data-APPS_2_MIN_CURRENT_POS_mm)/APPS_2_TOTAL_TRAVEL_mm;
-	pedalPosition2_percent.data = boundary_check(pedal_pos2_percent, 0.0, 100.0);
+	pedalPosition2_percent.data = clamp(pedal_pos2_percent, 0.0, 100.0);
 }
 
 void update_rpm(){
@@ -90,11 +92,10 @@ void update_rpm(){
 	wheelSpeedFrontLeft_mph.data = wheelSpeedFrontRight_mph.data;
 }
 
-float boundary_check(float data, float min, float max){
+float clamp(float data, float min, float max){
 	if(data < min){
 		return min;
-	}
-	else if (data > max){
+	} else if (data > max){
 		return max;
 	}
 

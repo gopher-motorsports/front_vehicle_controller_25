@@ -15,7 +15,7 @@
 #include <stdbool.h>
 #include "cmsis_os.h"
 
-#define NUM_OF_TIMED_FAULTS 5
+#define NUM_OF_TIMED_FAULTS 3
 typedef struct {
 	float data;
     float max_threshold;
