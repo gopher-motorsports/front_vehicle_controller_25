@@ -16,7 +16,7 @@ buckets:
                 samples_buffered: 1
             brakePressureFront_psi: #connector pin 26, mcu pin 8
                 ADC: ADC1_IN10
-                sensor: brake_pressure_sensor
+                sensor: brake_pressure_sensor_rife
                 samples_buffered: 1
             brakeTempFrontLeft_C: #connector pin 21, mcu pin 20
                 ADC: ADC1_IN4
