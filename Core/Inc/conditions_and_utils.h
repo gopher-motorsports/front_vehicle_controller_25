@@ -13,7 +13,7 @@ float calculate_dc_current_limit();
 int get_max_current_limit();
 void check_button_inputs();
 uint8_t predrive_conditions_met();
-uint8_t is_vechile_faulting();
+uint8_t is_vehicle_faulting();
 void set_inv_disabled(float *max_current, uint8_t *enable);
 float calculate_desired_current();
 boolean isVehicleMoving();

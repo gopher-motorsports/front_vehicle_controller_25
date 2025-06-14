@@ -49,9 +49,9 @@
 // ================================== READY TO DRIVE PARAMETERS =================================
 #define PREDRIVE_BRAKE_THRESH_psi  10  // The minimum brake pressure to enter the driving state
 #define PREDRIVE_BUTTON_PRESSED    1    // The value of the button parameter when pressed
-#define PREDRIVE_TIME_ms           0 // The length of predrive in ms
+#define PREDRIVE_TIME_ms           2000 // The length of predrive in ms
 #define RTD_BUTTON_PUSHED          (GPIO_PIN_RESET)
-#define TS_ON_THRESHOLD_VOLTAGE_V  40
+#define TS_ON_THRESHOLD_VOLTAGE_V  60
 // ==============================================================================================
 
 
@@ -96,6 +96,7 @@
 #define INVERTER_CMD_ID         0x0C0  // The CAN ID of the inverter command
 #define INVERTER_PARAM_ID       0x0C1  // The CAN ID of the parameter message
 #define INVERTER_NO_FAULT       0x000  // The data of the fault code when there is no inverter fault
+#define INVERTER_UV_FAULT       0x02   // Undervoltage fault code for the inverter
 #define PARAM_CMD_FAULT_CLEAR   20     // Address of the fault clear parameter
 #define PARAM_CMD_READ          0      // Value to send in parameter command to read value
 #define PARAM_CMD_WRITE         1      // Value to send in parameter command to read value
@@ -113,10 +114,8 @@
 #define INVERTER_DRIVE_ENABLE_CMD_ID         0x18E  // The CAN ID for Drive Enable Command
 #define INVERTER_MAX_CURRENT_AC_LIMIT_CMD_ID 0x10E  // The CAN ID for Setting Max Current Limit
 #define INVERTER_SET_CURRENT_AC_CMD_ID     	 0x02E  // The CAN ID for Setting Desired Inverter Current
-#define MAX_TEST_CMD_CURRENT_A    			 550  // The maximum current that will be commanded
 #define DRIVE_ENABLE_INVERTER_TIMEOUT		 200 //Inverter Timeout if
 #define VEHICLE_STOPPED_THRESHOLD			 1000 //If vehicle is stopped for 1 sec
-#define SLOW_MODE							 1 // If vehicle is in slow mode;
 
 
 //#define USING_LAUNCH_CONTROL
@@ -146,6 +145,9 @@
 #define BSPD_TS_SNS_FAULT    GPIO_PIN_RESET
 #define BSPD_TS_BRK_FAULT    GPIO_PIN_SET
 // ==============================================================================================
+
+// This one for realizies
+#define PEDAL_MAX_AC_CURRENT 100 // Current commanded
 
 
 // =================== THROTTLE CALCULATION ===================

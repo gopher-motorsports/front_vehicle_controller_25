@@ -74,7 +74,6 @@ void update_inverter_params(uint8_t vehicle_state, float desired_current, float 
 	// We have to send group here to prevent timeout because GCAN won't update values if they're the same
 	send_group(driveEnable_state.info.GROUP_ID);
 	send_group(desiredInvCurrentPeak_A.info.GROUP_ID);
-
 }
 
 void update_pedal_percent(){
@@ -102,26 +101,18 @@ float clamp(float data, float min, float max){
 	return data;
 }
 
-//void update_display_fault_status() {
-//	int status = NONE;
-//	if(amsFault_state.data) status = AMS_FAULT;
-//	else if (vehicle_state == VEHICLE_FAULT) status = INVERTER_FAULT;
-//	else if(bmsNumActiveAlerts_state.data) status = BMS_FAULT;
-//	else if(fvcPedalPositionBrakingFault_state.data) status = RELEASE_PEDAL;
-//	else if((bspdTractiveSystemBrakingFault_state.data || fvcBrakingClampingCurrent_state.data) && (!BYPASS_ACTIVE)) status = BRAKING_FAULT;
-//	else if(fvcPedalPositionCorrelationFault_state.data) status = APPS_FAULT;
-//	else if((bspdFault_state.data
-//			|| bspdBrakePressureSensorFault_state.data
-//			|| bspdTractiveSystemCurrentSensorFault_state.data)
-//			&& (!BYPASS_ACTIVE)) status = BSPD_FAULT;
-//	else if((fvcBrakePressureSensorFault_state.data
-//			|| fvcPedalPosition1Fault_state.data
-//			|| fvcPedalPosition2Fault_state.data
-//			|| fvcTractiveSystemCurrentSensorFault_state.data) && (!BYPASS_ACTIVE)
-//			) status = VCU_FAULT;
-//
-//	update_and_queue_param_u8(&displayFaultStatus_state, status);
-//}
+void update_display_fault_status() {
+	int status = NONE;
+	if(amsFault_state.data) status = AMS_FAULT;
+	else if (vehicle_state == VEHICLE_FAULT) status = INVERTER_FAULT;
+	else if(fvcPedalPositionBrakingFault_state.data) status = RELEASE_PEDAL;
+	else if(bspdTractiveSystemBrakingFault_state.data) status = BRAKING_FAULT;
+	else if(fvcPedalPositionCorrelationFault_state.data) status = APPS_FAULT;
+	else if(bspdFault_state.data) status = BSPD_FAULT;
+
+
+	update_and_queue_param_u8(&displayFaultStatus_state, status);
+}
 
 void update_sdc_params(){
 	sdcStatus3.data = HAL_GPIO_ReadPin(SDC1_MCU_GPIO_Port, SDC1_MCU_Pin);

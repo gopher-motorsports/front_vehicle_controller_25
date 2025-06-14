@@ -21,19 +21,11 @@ void LED_task(){
 	}
 }
 
-//Get Desired Current Limit
-int get_max_current_limit(){
-	if(driving_mode == SLOW_MODE)
-		return 10; // 100 Apk, 1/5 the speed
-	else
-		return 10; // 550 Apk
-}
-
 uint8_t predrive_conditions_met(){
-	return (brakePressureFront_psi.data > PREDRIVE_BRAKE_THRESH_psi) && (PREDRIVE_BUTTON_PARAM.data == PRESSED);
+	return (brakePressureFront_psi.data >= PREDRIVE_BRAKE_THRESH_psi) && (PREDRIVE_BUTTON_PARAM.data == PRESSED)  && (inputInverterVoltage_V.data >= TS_ON_THRESHOLD_VOLTAGE_V);
 }
 
-uint8_t is_vechile_faulting(){
+uint8_t is_vehicle_faulting(){
 
 	//pulled high when a fault is tripped, intialized to 0
 	uint8_t fault_tripped = 0;
@@ -81,8 +73,7 @@ float calculate_dc_current_limit(){
 	if(bspdTractiveSystemBrakingFault_state.data){
 		if(inputInverterVoltage_V.data != 0)
 			dc_current_limit_A = BSPD_POWER_LIMIT / inputInverterVoltage_V.data; //stay below 5 kW I = P/V
-	}
-	else{
+	} else {
 		dc_current_limit_A = MAX_DC_CURRENT_LIMIT;
 	}
 	return dc_current_limit_A;
@@ -98,8 +89,8 @@ void set_inv_disabled(float *max_current, uint8_t *enable){
 }
 
 float calculate_desired_current(){
-	float desired_current = ((pedalPosition1_mm.data-APPS_1_MIN_CURRENT_POS_mm)/APPS_1_TOTAL_TRAVEL_mm) * get_max_current_limit();
-	desired_current = clamp(desired_current, 0, get_max_current_limit());
+	float desired_current = ((pedalPosition1_mm.data-APPS_1_MIN_CURRENT_POS_mm)/APPS_1_TOTAL_TRAVEL_mm) * PEDAL_MAX_AC_CURRENT;
+	desired_current = clamp(desired_current, 0, PEDAL_MAX_AC_CURRENT);
 	return desired_current;
 }
 

@@ -84,7 +84,7 @@ void can_buffer_handling_loop()
 }
 
 void determine_current_parameters(){
-	maxcurrentLimit_A = is_vechile_faulting() ? 0 : get_max_current_limit();
+	maxcurrentLimit_A = is_vehicle_faulting() ? 0 : PEDAL_MAX_AC_CURRENT;
 	dc_currentlimit_A = calculate_dc_current_limit();
 	desiredCurrent_A = calculate_desired_current();
 }
@@ -93,7 +93,7 @@ void process_inverter() {
 
 	if((HAL_GetTick() -  driveEnableInvStatus_state.info.last_rx) > INVERTER_TIMEOUT_ms) {
 		vehicle_state = VEHICLE_NO_COMMS;
-	} else if(faultCode.data != INVERTER_NO_FAULT) {
+	} else if(faultCode.data & INVERTER_UV_FAULT) {
 		vehicle_state = VEHICLE_FAULT;
 	}
 
@@ -101,7 +101,7 @@ void process_inverter() {
 
 	// TODO: Delete?
 	if(vehicle_state != VEHICLE_DRIVING) {
-		set_inv_disabled(&maxcurrentLimit_A, NULL);
+		set_inv_disabled(&maxcurrentLimit_A, &driveEnable_state.data);
 	}
 
 
@@ -118,7 +118,7 @@ void process_inverter() {
 
 	case VEHICLE_FAULT:
 		//check to see if fault goes away
-		if(faultCode.data == INVERTER_NO_FAULT) {
+		if(!(faultCode.data & INVERTER_UV_FAULT)) {
 			vehicle_state = VEHICLE_NO_COMMS;
 		}
 
@@ -126,7 +126,7 @@ void process_inverter() {
 
 	case VEHICLE_STANDBY:
 		// everything is good to go in this state, we are just waiting to enable the RTD button
-		if (predrive_conditions_met()){
+		if (predrive_conditions_met()) {
 			vehicle_state = VEHICLE_PREDRIVE;
 			preDriveTimer_ms = 0;
 		}
