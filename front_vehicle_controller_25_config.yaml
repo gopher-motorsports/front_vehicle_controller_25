@@ -99,3 +99,7 @@ buckets:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
+            driveSpeedMode_state:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1

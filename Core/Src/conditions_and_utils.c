@@ -23,14 +23,15 @@ void LED_task(){
 
 //Get Desired Current Limit
 int get_max_current_limit(){
-	if(driving_mode == SLOW_MODE)
-		return 10; // 100 Apk, 1/5 the speed
+	if(driveSpeedMode_state.data == SLOW_MODE)
+		return 55; // 100 Apk, 1/5 the speed
 	else
-		return 10; // 550 Apk
+		return 550; // 550 Apk
 }
 
 uint8_t predrive_conditions_met(){
-	return (brakePressureFront_psi.data > PREDRIVE_BRAKE_THRESH_psi) && (PREDRIVE_BUTTON_PARAM.data == PRESSED);
+	return (brakePressureFront_psi.data > PREDRIVE_BRAKE_THRESH_psi) && (PREDRIVE_BUTTON_PARAM.data == PRESSED)
+			&& (inputInverterVoltage_V.data > TS_ON_THRESHOLD_VOLTAGE_V);
 }
 
 uint8_t is_vechile_faulting(){

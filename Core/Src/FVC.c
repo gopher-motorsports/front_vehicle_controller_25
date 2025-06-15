@@ -10,7 +10,7 @@
 
 //GopherLibraries
 #include "gopher_sense.h"
-
+#include "GopherCAN.h"
 //Suporting Files:
 #include "conditions_and_utils.h"
 #include "sensor_and_CAN.h"
@@ -60,6 +60,7 @@ LAUNCH_CONTROL_STATES_t launch_control_state = LAUNCH_CONTROL_DISABLED;
 float motor_temp = 0;
 
 void main_loop() {
+	determine_drive_mode();
 	update_periodic_CAN_params();
 	process_inverter();
 	LED_task();
@@ -81,6 +82,23 @@ void can_buffer_handling_loop()
 	service_can_tx(&hcan1);
 	service_can_tx(&hcan2);
 	service_can_rx_buffer();
+}
+
+void determine_drive_mode(){
+	static uint8_t last_button_press = 0;
+	static U32 last_button_press_time = 0;
+	static boolean mode_change_pending = 0;
+	if(swButon5_state.data == 1 && last_button_press == 0){
+		mode_change_pending = TRUE;
+		last_button_press_time = HAL_GetTick();
+	}
+
+	if(mode_change_pending && (HAL_GetTick() - last_button_press_time > SLOW_MODE_BUTTON_THRESH)){
+		driveSpeedMode_state.data = !(driveSpeedMode_state.data);
+		mode_change_pending = FALSE;
+	}
+
+	last_button_press = swButon5_state.data;
 }
 
 void determine_current_parameters(){

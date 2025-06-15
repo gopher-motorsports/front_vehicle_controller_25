@@ -116,8 +116,8 @@
 #define MAX_TEST_CMD_CURRENT_A    			 550  // The maximum current that will be commanded
 #define DRIVE_ENABLE_INVERTER_TIMEOUT		 200 //Inverter Timeout if
 #define VEHICLE_STOPPED_THRESHOLD			 1000 //If vehicle is stopped for 1 sec
-#define SLOW_MODE							 1 // If vehicle is in slow mode;
-
+#define SLOW_MODE							 1 // If vehicle is in slow mode
+#define NORMAL_MODE							 0 // If vehicle is in normal mode
 
 //#define USING_LAUNCH_CONTROL
 #define RPM_LAUNCH_CONTROL_THRESH			10
@@ -127,7 +127,8 @@
 #define NORMAL_MODE 0
 #define SLOW_MODE 1
 // ======================================== I/O PARAMETERS ======================================
-#define PREDRIVE_BUTTON_PARAM swButon5_state
+#define PREDRIVE_BUTTON_PARAM swButon4_state
+#define SLOW_MODE_BUTTON_THRESH 3000
 #define MOSFET_PULL_DOWN_ON (GPIO_PIN_SET)
 #define MOSFET_PULL_DOWN_OFF (GPIO_PIN_RESET)
 #define PRESSED 1
@@ -192,4 +193,5 @@ void can_buffer_handling_loop();
 void process_inverter();   // Updates vehicle state and applicable commands
 void launch_control_sm();
 void determine_current_parameters();
+void determine_drive_mode();
 #endif /* INC_FVC_H_ */
