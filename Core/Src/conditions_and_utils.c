@@ -26,7 +26,7 @@ int get_max_current_limit(){
 	if(driveSpeedMode_state.data == SLOW_MODE)
 		return 55; // 100 Apk, 1/5 the speed
 	else
-		return 550; // 550 Apk
+		return 300; // 550 Apk
 }
 
 uint8_t predrive_conditions_met(){
@@ -56,7 +56,7 @@ uint8_t is_vechile_faulting(){
 		if(fault->fault_timer > fault->input_delay_threshold){
 			fault->state = true;
 		}
-
+		fault->can_param->data = fault->state;
 		fault_tripped |= fault->state;
 	}
 

@@ -9,7 +9,7 @@
 #include "gopher_sense.h"
 #include "stdlib.h"
 #include "sensor_and_CAN.h"
-
+#include "fvc_software_faults.h"
 //Always Periodic --> pedalPosition1 %, pedalPosition2 %, wheel speed front left, wheel speed front right, out of range --> apps1, apps2, brake front, cor
 //Inverter State Machine Periodic --> desired_current, max_current, enable state, vehicle state
 //Change based --> vcuPedalPosition1Fault_state, vcuPedalPosition2Fault_state, vcuBrakePressureSensorFault_state, vcuTractiveSystemCurrentSensorFault_state
@@ -29,7 +29,7 @@ FLOAT_CAN_STRUCT *periodic_float_params[] = {
 	&shockPosFrontLeft_mm,
 	&shockPosFrontRight_mm,
 	&wheelSpeedFrontLeft_mph,
-	&wheelSpeedFrontRight_mph,
+	&wheelSpeedFrontRight_mph
 };
 
 U8_CAN_STRUCT *periodic_U8_params[] = {
@@ -40,6 +40,10 @@ U8_CAN_STRUCT *periodic_U8_params[] = {
 	&currentlyMoving_state,
 	&sdcStatus3,
 	&sdcStatus4,
+	&driveSpeedMode_state,
+	&fvcPedalPosition1Fault_state,
+	&fvcPedalPosition2Fault_state,
+	&fvcPedalPositionCorrelationFault_state
 };
 uint8_t float_params_len = sizeof(periodic_float_params)/sizeof(periodic_float_params[0]);
 uint8_t U8_params_len = sizeof(periodic_U8_params)/sizeof(periodic_U8_params[0]);
@@ -47,14 +51,15 @@ uint8_t U8_params_len = sizeof(periodic_U8_params)/sizeof(periodic_U8_params[0])
 void update_periodic_CAN_params(){
 	update_pedal_percent();
 	update_sdc_params();
+	update_display_fault_status();
+
 	for(int i = 0; i < float_params_len; i++){
-//		update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
+		update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
 	}
 
 	for(int i = 0; i < U8_params_len; i++){
-		update_and_queue_param_u8(periodic_U8_params[i], periodic_float_params[i]->data);
+		update_and_queue_param_u8(periodic_U8_params[i], periodic_U8_params[i]->data);
 	}
-
 
 }
 
@@ -102,26 +107,18 @@ float clamp(float data, float min, float max){
 	return data;
 }
 
-//void update_display_fault_status() {
-//	int status = NONE;
-//	if(amsFault_state.data) status = AMS_FAULT;
-//	else if (vehicle_state == VEHICLE_FAULT) status = INVERTER_FAULT;
+void update_display_fault_status() {
+	int status = NONE;
+	if(amsFault_state.data) status = AMS_FAULT;
+	else if (vehicle_state == VEHICLE_FAULT) status = INVERTER_FAULT;
 //	else if(bmsNumActiveAlerts_state.data) status = BMS_FAULT;
-//	else if(fvcPedalPositionBrakingFault_state.data) status = RELEASE_PEDAL;
-//	else if((bspdTractiveSystemBrakingFault_state.data || fvcBrakingClampingCurrent_state.data) && (!BYPASS_ACTIVE)) status = BRAKING_FAULT;
-//	else if(fvcPedalPositionCorrelationFault_state.data) status = APPS_FAULT;
-//	else if((bspdFault_state.data
-//			|| bspdBrakePressureSensorFault_state.data
-//			|| bspdTractiveSystemCurrentSensorFault_state.data)
-//			&& (!BYPASS_ACTIVE)) status = BSPD_FAULT;
-//	else if((fvcBrakePressureSensorFault_state.data
-//			|| fvcPedalPosition1Fault_state.data
-//			|| fvcPedalPosition2Fault_state.data
-//			|| fvcTractiveSystemCurrentSensorFault_state.data) && (!BYPASS_ACTIVE)
-//			) status = VCU_FAULT;
-//
-//	update_and_queue_param_u8(&displayFaultStatus_state, status);
-//}
+	else if(fvcPedalPositionBrakingFault_state.data) status = RELEASE_PEDAL;
+	else if(bspdTractiveSystemBrakingFault_state.data && (!BYPASS_ACTIVE)) status = BRAKING_FAULT;
+	else if(fvcPedalPositionCorrelationFault_state.data || fvcPedalPosition1Fault_state.data || fvcPeda2Position1Fault_state.data) status = APPS_FAULT;
+	else if(bspdFault_state.data && (!BYPASS_ACTIVE)) status = BSPD_FAULT;
+
+	update_and_queue_param_u8(&displayFaultStatus_state, status);
+}
 
 void update_sdc_params(){
 	sdcStatus3.data = HAL_GPIO_ReadPin(SDC1_MCU_GPIO_Port, SDC1_MCU_Pin);

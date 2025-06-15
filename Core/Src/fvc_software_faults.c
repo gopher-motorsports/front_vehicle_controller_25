@@ -23,7 +23,8 @@ SOFTWARE_FAULT APPS1_Range_Fault = {
 	.min_threshold = APPS_MIN_ERROR_POS_mm,
 	.fault_timer = 0,
 	.input_delay_threshold = INPUT_TRIP_DELAY_ms,
-	.state = false
+	.state = false,
+	.can_param = &fvcPedalPosition1Fault_state
 };
 
 //APPS2 Out of Range Check
@@ -33,7 +34,8 @@ SOFTWARE_FAULT APPS2_Range_Fault = {
 	.min_threshold = APPS_MIN_ERROR_POS_mm,
 	.fault_timer = 0,
 	.input_delay_threshold = INPUT_TRIP_DELAY_ms,
-	.state = false
+	.state = false,
+	.can_param = &fvcPedalPosition2Fault_state
 };
 
 //Brake Pressure Sensor Out of Range Check
@@ -67,7 +69,8 @@ SOFTWARE_FAULT Pedal_Correlation_Fault = {
 	.min_threshold = -FLT_MIN, //not using this one, put in smallest mimumum value of a float sowon't trigger
 	.fault_timer = 0,
 	.input_delay_threshold = CORRELATION_TRIP_DELAY_ms,
-	.state = false
+	.state = false,
+	.can_param = &fvcPedalPositionCorrelationFault_state
 };
 //look at 100 fault
 SOFTWARE_FAULT* TIMED_SOFTWARE_FAULTS[NUM_OF_TIMED_FAULTS] = {
@@ -75,7 +78,7 @@ SOFTWARE_FAULT* TIMED_SOFTWARE_FAULTS[NUM_OF_TIMED_FAULTS] = {
     &APPS2_Range_Fault,
 //    &BRK_PRESSURE_Range_Fault,
 //    &TS_CURRENT_Range_Fault,
-    &Pedal_Correlation_Fault,
+    &Pedal_Correlation_Fault
 };
 
 void update_struct_fault_data(){
