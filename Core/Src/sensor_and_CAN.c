@@ -114,7 +114,7 @@ void update_display_fault_status() {
 //	else if(bmsNumActiveAlerts_state.data) status = BMS_FAULT;
 	else if(fvcPedalPositionBrakingFault_state.data) status = RELEASE_PEDAL;
 	else if(bspdTractiveSystemBrakingFault_state.data && (!BYPASS_ACTIVE)) status = BRAKING_FAULT;
-	else if(fvcPedalPositionCorrelationFault_state.data || fvcPedalPosition1Fault_state.data || fvcPeda2Position1Fault_state.data) status = APPS_FAULT;
+	else if(fvcPedalPositionCorrelationFault_state.data || fvcPedalPosition1Fault_state.data || fvcPedalPosition2Fault_state.data) status = APPS_FAULT;
 	else if(bspdFault_state.data && (!BYPASS_ACTIVE)) status = BSPD_FAULT;
 
 	update_and_queue_param_u8(&displayFaultStatus_state, status);
