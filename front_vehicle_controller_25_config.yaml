@@ -63,6 +63,18 @@ buckets:
     low_frequency_fvc_but_faster:
         frequency_hz: 100
         parameters:
+            fvcPedalPosition1Fault_state:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcPedalPosition2Fault_state:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcPedalPositionCorrelationFault_state:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
             fvcTemp_C: 
                 ADC: NON_ADC
                 sensor: NON_ADC
@@ -96,6 +108,10 @@ buckets:
                 sensor: NON_ADC
                 samples_buffered: 1
             sdcStatus4: #previously FVC_SDC_Fault_2_state
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            driveSpeedMode_state:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1

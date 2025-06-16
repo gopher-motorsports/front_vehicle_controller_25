@@ -47,7 +47,7 @@ uint8_t is_vehicle_faulting(){
 		if(fault->fault_timer > fault->input_delay_threshold){
 			fault->state = true;
 		}
-
+		fault->can_param->data = fault->state;
 		fault_tripped |= fault->state;
 	}
 

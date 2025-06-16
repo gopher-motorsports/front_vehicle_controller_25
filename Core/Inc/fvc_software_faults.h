@@ -23,6 +23,7 @@ typedef struct {
     uint16_t fault_timer;
     uint16_t input_delay_threshold;
     boolean state;
+    U8_CAN_STRUCT * can_param;
 } SOFTWARE_FAULT;
 
 extern SOFTWARE_FAULT* TIMED_SOFTWARE_FAULTS[NUM_OF_TIMED_FAULTS];
