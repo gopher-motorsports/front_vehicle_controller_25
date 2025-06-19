@@ -31,11 +31,11 @@
 //#define APPS_MIN_ERROR_POS_mm 1.0f // position where the error begins
 //#define APPS_TOTAL_TRAVEL_mm ( APPS_MAX_TORQUE_POS_mm - APPS_MIN_TORQUE_POS_mm )
 
-#define APPS_1_MAX_CURRENT_POS_mm  21.61f // The position of the pedal at 100% torque
-#define APPS_1_MIN_CURRENT_POS_mm  6.18f  // The position of the pedal at 0% torque
-#define APPS_2_MAX_CURRENT_POS_mm  19.53f // The position of the pedal at 100% torque
-#define APPS_2_MIN_CURRENT_POS_mm  3.94f  // The position of the pedal at 0% torque
-#define APPS_MAX_ERROR_POS_mm 23.00f // position where the error begins, check back on this
+#define APPS_1_MAX_CURRENT_POS_mm  18.25f // The position of the pedal at 100% torque
+#define APPS_1_MIN_CURRENT_POS_mm  5.25f  // The position of the pedal at 0% torque
+#define APPS_2_MAX_CURRENT_POS_mm  17.50f // The position of the pedal at 100% torque
+#define APPS_2_MIN_CURRENT_POS_mm  4.50f  // The position of the pedal at 0% torque
+#define APPS_MAX_ERROR_POS_mm 24.50f // position where the error begins, check back on this
 #define APPS_MIN_ERROR_POS_mm 1.00f  // position where the error begins
 #define APPS_1_TOTAL_TRAVEL_mm ( APPS_1_MAX_CURRENT_POS_mm - APPS_1_MIN_CURRENT_POS_mm )
 #define APPS_2_TOTAL_TRAVEL_mm ( APPS_2_MAX_CURRENT_POS_mm - APPS_2_MIN_CURRENT_POS_mm )
@@ -49,7 +49,7 @@
 // ================================== READY TO DRIVE PARAMETERS =================================
 #define PREDRIVE_BRAKE_THRESH_psi  10  // The minimum brake pressure to enter the driving state
 #define PREDRIVE_BUTTON_PRESSED    1    // The value of the button parameter when pressed
-#define PREDRIVE_TIME_ms           0 // The length of predrive in ms
+#define PREDRIVE_TIME_ms           3000 // The length of predrive in ms
 #define RTD_BUTTON_PUSHED          (GPIO_PIN_RESET)
 #define TS_ON_THRESHOLD_VOLTAGE_V  40
 // ==============================================================================================
@@ -128,7 +128,7 @@
 #define SLOW_MODE 1
 // ======================================== I/O PARAMETERS ======================================
 #define PREDRIVE_BUTTON_PARAM swButon4_state
-#define SLOW_MODE_BUTTON_THRESH 3000
+#define SLOW_MODE_BUTTON_THRESH 2000
 #define MOSFET_PULL_DOWN_ON (GPIO_PIN_SET)
 #define MOSFET_PULL_DOWN_OFF (GPIO_PIN_RESET)
 #define PRESSED 1
@@ -148,6 +148,11 @@
 #define BSPD_TS_BRK_FAULT    GPIO_PIN_SET
 // ==============================================================================================
 
+// ======================================= LAUNCH CONTROL PARAMETERS ======================================
+// Allows us to disable a particular fault
+#define LAUNCH_SPEED_TURNOFF_mph   10
+#define DRIVE_RATIO				0.0255754 //erpm of motor to mph of the car
+// ==============================================================================================
 
 // =================== THROTTLE CALCULATION ===================
 // Throttle is calculated using APPS1 with APPS2 being used
@@ -164,6 +169,7 @@ typedef enum
 	VEHICLE_STANDBY   = 2, // The inverter has exited lockout but no torque commands will be sent
 	VEHICLE_PREDRIVE  = 3, // The vehicle buzzer is active and the driving state will be entered
 	VEHICLE_DRIVING   = 4, // Torque commands are actively being sent from APPS positions
+	VEHICLE_LAUNCH	  = 5  // Torque is limited to the motor at low speed
 } VEHICLE_STATE_t;
 
 typedef enum

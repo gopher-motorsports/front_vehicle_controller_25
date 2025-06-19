@@ -15,7 +15,7 @@
 #include "conditions_and_utils.h"
 #include "sensor_and_CAN.h"
 #include "main.h"
-
+#include "fvc_software_faults.h"
 //HAL Files
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_tim.h"
@@ -102,9 +102,16 @@ void determine_drive_mode(){
 }
 
 void determine_current_parameters(){
-	maxcurrentLimit_A = is_vechile_faulting() ? 0 : get_max_current_limit();
+	update_struct_fault_data();
+	if(is_vechile_faulting()){
+		maxcurrentLimit_A = 0;
+		desiredCurrent_A = 0;
+	}
+	else{
+		maxcurrentLimit_A = get_max_current_limit();
+		desiredCurrent_A = calculate_desired_current();
+	}
 	dc_currentlimit_A = calculate_dc_current_limit();
-	desiredCurrent_A = calculate_desired_current();
 }
 
 void process_inverter() {

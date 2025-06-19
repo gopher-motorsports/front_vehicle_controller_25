@@ -34,12 +34,14 @@ uint8_t predrive_conditions_met(){
 			&& (inputInverterVoltage_V.data > TS_ON_THRESHOLD_VOLTAGE_V);
 }
 
+uint8_t fault_tripped = 0;
+boolean appsBrakeLatched_state = 0;
 uint8_t is_vechile_faulting(){
 
 	//pulled high when a fault is tripped, intialized to 0
-	uint8_t fault_tripped = 0;
 
 	SOFTWARE_FAULT* fault;
+	fault_tripped = 0;
 	for(int i = 0; i < NUM_OF_TIMED_FAULTS; i++){
 		fault = TIMED_SOFTWARE_FAULTS[i];
 		if(fault->data > fault->max_threshold || fault->data < fault->min_threshold){ //correlation has no min, but edge case accounted for in defines
@@ -64,8 +66,7 @@ uint8_t is_vechile_faulting(){
 	fault_tripped |= bspdInputFault_state.data;
 
 	// APPS/Brake Plausibility Fault (both pedals pushed)
-	boolean appsBrakeLatched_state;
-	if(brakePressureFront_psi.data > APPS_BRAKE_PRESS_THRESH_psi && pedalPosition1_percent.data > 25) {
+	if((brakePressureFront_psi.data > APPS_BRAKE_PRESS_THRESH_psi) && (pedalPosition1_percent.data > 25)) {
 		appsBrakeLatched_state = TRUE;
 	} else if (pedalPosition1_percent.data <= 5) {
 		appsBrakeLatched_state = FALSE;
