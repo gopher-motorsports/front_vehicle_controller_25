@@ -9,7 +9,13 @@
 #include "gopher_sense.h"
 #include "stdlib.h"
 #include "sensor_and_CAN.h"
+<<<<<<< Updated upstream
 
+=======
+#include "fvc_software_faults.h"
+
+#include "Vectornav.h"
+>>>>>>> Stashed changes
 //Always Periodic --> pedalPosition1 %, pedalPosition2 %, wheel speed front left, wheel speed front right, out of range --> apps1, apps2, brake front, cor
 //Inverter State Machine Periodic --> desired_current, max_current, enable state, vehicle state
 //Change based --> vcuPedalPosition1Fault_state, vcuPedalPosition2Fault_state, vcuBrakePressureSensorFault_state, vcuTractiveSystemCurrentSensorFault_state
@@ -47,6 +53,11 @@ uint8_t U8_params_len = sizeof(periodic_U8_params)/sizeof(periodic_U8_params[0])
 void update_periodic_CAN_params(){
 	update_pedal_percent();
 	update_sdc_params();
+<<<<<<< Updated upstream
+=======
+	update_display_fault_status();
+	update_and_queue_vn_variables();
+>>>>>>> Stashed changes
 	for(int i = 0; i < float_params_len; i++){
 		//update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
 	}
