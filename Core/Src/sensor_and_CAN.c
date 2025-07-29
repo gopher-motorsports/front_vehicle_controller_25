@@ -30,6 +30,8 @@ FLOAT_CAN_STRUCT *periodic_float_params[] = {
 	&shockPosFrontRight_mm,
 	&wheelSpeedFrontLeft_mph,
 	&wheelSpeedFrontRight_mph,
+	&fvcControllerTemp_C,
+	&fvcMotorTemp_C,
 };
 
 U8_CAN_STRUCT *periodic_U8_params[] = {
@@ -47,6 +49,7 @@ uint8_t U8_params_len = sizeof(periodic_U8_params)/sizeof(periodic_U8_params[0])
 void update_periodic_CAN_params(){
 	update_pedal_percent();
 	update_sdc_params();
+	update_inverter_motor_temps();
 	for(int i = 0; i < float_params_len; i++){
 		//update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
 	}
@@ -127,3 +130,7 @@ void update_sdc_params(){
 	update_and_queue_param_u8(&sdcStatus4, sdcStatus4.data);
 }
 
+void update_inverter_motor_temps(){
+	update_and_queue_param_float(&fvcControllerTemp_C, ControllerTemp_C.data);
+	update_and_queue_param_float(&fvcMotorTemp_C, motorTemp_C.data);
+}
