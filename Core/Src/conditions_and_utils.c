@@ -26,7 +26,7 @@ int get_max_current_limit(){
 	if(driveSpeedMode_state.data == SLOW_MODE)
 		return 55; // 100 Apk, 1/5 the speed
 	else
-		return 300; // 550 Apk
+		return 550; // 550 Apk
 }
 
 uint8_t predrive_conditions_met(){
