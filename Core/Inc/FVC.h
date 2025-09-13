@@ -147,7 +147,7 @@
 // ==============================================================================================
 
 // This one for realizies
-#define PEDAL_MAX_AC_CURRENT 100 // Current commanded
+#define PEDAL_MAX_AC_CURRENT 550 // Current commanded
 
 
 // =================== THROTTLE CALCULATION ===================
