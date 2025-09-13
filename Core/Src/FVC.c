@@ -118,7 +118,7 @@ void process_inverter() {
 
 	if((HAL_GetTick() -  driveEnableInvStatus_state.info.last_rx) > INVERTER_TIMEOUT_ms) {
 		vehicle_state = VEHICLE_NO_COMMS;
-	} else if(faultCode.data != INVERTER_NO_FAULT) {
+	} else if(faultCode.data & INVERTER_UV_FAULT){
 		vehicle_state = VEHICLE_FAULT;
 	}
 
@@ -126,7 +126,7 @@ void process_inverter() {
 
 	// TODO: Delete?
 	if(vehicle_state != VEHICLE_DRIVING) {
-		set_inv_disabled(&maxcurrentLimit_A, NULL);
+		set_inv_disabled(&maxcurrentLimit_A, &driveEnable_state.data);
 	}
 
 
@@ -143,7 +143,7 @@ void process_inverter() {
 
 	case VEHICLE_FAULT:
 		//check to see if fault goes away
-		if(faultCode.data == INVERTER_NO_FAULT) {
+		if(!(faultCode.data & INVERTER_UV_FAULT)) {
 			vehicle_state = VEHICLE_NO_COMMS;
 		}
 
@@ -179,7 +179,7 @@ void process_inverter() {
 	}
 
 	// send the current request
-	update_inverter_params(vehicle_state, desiredCurrent_A, maxcurrentLimit_A, 200, vehicle_state == VEHICLE_DRIVING);
+	update_inverter_params(vehicle_state, desiredCurrent_A, maxcurrentLimit_A, MAX_DC_CURRENT_LIMIT, vehicle_state == VEHICLE_DRIVING);
 }
 
 

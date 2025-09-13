@@ -32,10 +32,10 @@
 //#define APPS_TOTAL_TRAVEL_mm ( APPS_MAX_TORQUE_POS_mm - APPS_MIN_TORQUE_POS_mm )
 
 #define APPS_1_MAX_CURRENT_POS_mm  18.25f // The position of the pedal at 100% torque
-#define APPS_1_MIN_CURRENT_POS_mm  5.25f  // The position of the pedal at 0% torque
+#define APPS_1_MIN_CURRENT_POS_mm  6.25f  // The position of the pedal at 0% torque
 #define APPS_2_MAX_CURRENT_POS_mm  17.50f // The position of the pedal at 100% torque
 #define APPS_2_MIN_CURRENT_POS_mm  4.50f  // The position of the pedal at 0% torque
-#define APPS_MAX_ERROR_POS_mm 24.50f // position where the error begins, check back on this
+#define APPS_MAX_ERROR_POS_mm 26.00f // position where the error begins, check back on this
 #define APPS_MIN_ERROR_POS_mm 1.00f  // position where the error begins
 #define APPS_1_TOTAL_TRAVEL_mm ( APPS_1_MAX_CURRENT_POS_mm - APPS_1_MIN_CURRENT_POS_mm )
 #define APPS_2_TOTAL_TRAVEL_mm ( APPS_2_MAX_CURRENT_POS_mm - APPS_2_MIN_CURRENT_POS_mm )
@@ -96,6 +96,7 @@
 #define INVERTER_CMD_ID         0x0C0  // The CAN ID of the inverter command
 #define INVERTER_PARAM_ID       0x0C1  // The CAN ID of the parameter message
 #define INVERTER_NO_FAULT       0x000  // The data of the fault code when there is no inverter fault
+#define INVERTER_UV_FAULT       0x02   // Undervoltage fault code for the inverter
 #define PARAM_CMD_FAULT_CLEAR   20     // Address of the fault clear parameter
 #define PARAM_CMD_READ          0      // Value to send in parameter command to read value
 #define PARAM_CMD_WRITE         1      // Value to send in parameter command to read value
@@ -168,8 +169,7 @@ typedef enum
 	VEHICLE_FAULT     = 1, // The vehicle can detect that the inverter is Faulting
 	VEHICLE_STANDBY   = 2, // The inverter has exited lockout but no torque commands will be sent
 	VEHICLE_PREDRIVE  = 3, // The vehicle buzzer is active and the driving state will be entered
-	VEHICLE_DRIVING   = 4, // Torque commands are actively being sent from APPS positions
-	VEHICLE_LAUNCH	  = 5  // Torque is limited to the motor at low speed
+	VEHICLE_DRIVING   = 4  // Torque commands are actively being sent from APPS positions
 } VEHICLE_STATE_t;
 
 typedef enum
