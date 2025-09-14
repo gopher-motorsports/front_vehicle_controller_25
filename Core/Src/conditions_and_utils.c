@@ -24,9 +24,9 @@ void LED_task(){
 //Get Desired Current Limit
 int get_max_current_limit(){
 	if(driveSpeedMode_state.data == SLOW_MODE)
-		return 55; // 100 Apk, 1/5 the speed
+		return 390; // 100 Apk, 1/5 the speed
 	else
-		return 550; // 550 Apk
+		return 390; // 550 Apk
 }
 
 uint8_t predrive_conditions_met(){

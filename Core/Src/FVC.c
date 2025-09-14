@@ -108,7 +108,7 @@ void determine_current_parameters(){
 		desiredCurrent_A = 0;
 	}
 	else{
-		maxcurrentLimit_A = get_max_current_limit();
+		maxcurrentLimit_A = 500;
 		desiredCurrent_A = calculate_desired_current();
 	}
 	dc_currentlimit_A = calculate_dc_current_limit();
