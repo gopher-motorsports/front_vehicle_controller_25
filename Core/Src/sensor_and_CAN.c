@@ -127,3 +127,7 @@ void update_sdc_params(){
 	update_and_queue_param_u8(&sdcStatus4, sdcStatus4.data);
 }
 
+void update_inverter_motor_temps(){
+	update_and_queue_param_float(&fvcControllerTemp_C, ControllerTemp_C.data);
+	update_and_queue_param_float(&fvcMotorTemp_C, motorTemp_C.data);
+}
