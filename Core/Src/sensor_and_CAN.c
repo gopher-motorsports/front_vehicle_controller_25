@@ -52,6 +52,7 @@ void update_periodic_CAN_params(){
 	update_pedal_percent();
 	update_sdc_params();
 	update_display_fault_status();
+	update_inverter_motor_temps();
 
 	for(int i = 0; i < float_params_len; i++){
 		update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
