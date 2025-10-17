@@ -36,7 +36,7 @@
 #define APPS_2_MAX_CURRENT_POS_mm  17.50f // The position of the pedal at 100% torque
 #define APPS_2_MIN_CURRENT_POS_mm  4.50f  // The position of the pedal at 0% torque
 #define APPS_MAX_ERROR_POS_mm 26.00f // position where the error begins, check back on this
-#define APPS_MIN_ERROR_POS_mm 1.00f  // position where the error begins
+#define APPS_MIN_ERROR_POS_mm 0.50f  // position where the error begins
 #define APPS_1_TOTAL_TRAVEL_mm ( APPS_1_MAX_CURRENT_POS_mm - APPS_1_MIN_CURRENT_POS_mm )
 #define APPS_2_TOTAL_TRAVEL_mm ( APPS_2_MAX_CURRENT_POS_mm - APPS_2_MIN_CURRENT_POS_mm )
 // ==============================================================================================
