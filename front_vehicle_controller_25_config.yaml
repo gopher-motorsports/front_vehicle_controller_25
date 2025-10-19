@@ -115,3 +115,19 @@ buckets:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
+
+            pittoTubePressure_psi: #Drive speed mode temp indicator
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            
+            fvcControllerTemp_C:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcMotorTemp_C:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            
+                

@@ -29,7 +29,8 @@ FLOAT_CAN_STRUCT *periodic_float_params[] = {
 	&shockPosFrontLeft_mm,
 	&shockPosFrontRight_mm,
 	&wheelSpeedFrontLeft_mph,
-	&wheelSpeedFrontRight_mph
+	&wheelSpeedFrontRight_mph,
+	&pittoTubePressure_psi
 };
 
 U8_CAN_STRUCT *periodic_U8_params[] = {
@@ -52,6 +53,7 @@ void update_periodic_CAN_params(){
 	update_pedal_percent();
 	update_sdc_params();
 	update_display_fault_status();
+	update_inverter_motor_temps();
 
 	for(int i = 0; i < float_params_len; i++){
 		update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
@@ -95,6 +97,11 @@ void update_rpm(){
 	motor_rpm = electricalRPM_erpm.data * MOTOR_POLE_PAIRS;
 	wheelSpeedRearRight_mph.data = ((motor_rpm * MINUTES_PER_HOUR) * WHEEL_DIAMETER_IN * MATH_PI) / (FINAL_DRIVE_RATIO * IN_PER_FT);
 	wheelSpeedFrontLeft_mph.data = wheelSpeedFrontRight_mph.data;
+}
+
+void update_inverter_motor_temps(){
+	update_and_queue_param_float(&fvcControllerTemp_C, ControllerTemp_C.data);
+	update_and_queue_param_float(&fvcMotorTemp_C, motorTemp_C.data);
 }
 
 float clamp(float data, float min, float max){
