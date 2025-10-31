@@ -56,7 +56,7 @@ void update_periodic_CAN_params(){
 	update_sdc_params();
 	update_display_fault_status();
 	update_inverter_motor_temps();
-	//update_vector_nav_params();
+	update_vector_nav_params();
 
 	for(int i = 0; i < float_params_len; i++){
 		update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
@@ -137,7 +137,7 @@ void update_sdc_params(){
 	update_and_queue_param_u8(&sdcStatus4, sdcStatus4.data);
 }
 
-void update_and_queue_vectornav_params(void)
+void update_vector_nav_params(void)
 {
     // ---- Group 75: INS + Pos/Vel ----
     update_and_queue_param_u16(&fvcINS_status, vn300_75.INS_status);
