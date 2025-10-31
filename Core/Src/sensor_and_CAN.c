@@ -10,6 +10,7 @@
 #include "stdlib.h"
 #include "sensor_and_CAN.h"
 #include "fvc_software_faults.h"
+#include "vector_nav.h"
 //Always Periodic --> pedalPosition1 %, pedalPosition2 %, wheel speed front left, wheel speed front right, out of range --> apps1, apps2, brake front, cor
 //Inverter State Machine Periodic --> desired_current, max_current, enable state, vehicle state
 //Change based --> vcuPedalPosition1Fault_state, vcuPedalPosition2Fault_state, vcuBrakePressureSensorFault_state, vcuTractiveSystemCurrentSensorFault_state
@@ -46,6 +47,7 @@ U8_CAN_STRUCT *periodic_U8_params[] = {
 	&fvcPedalPosition2Fault_state,
 	&fvcPedalPositionCorrelationFault_state
 };
+
 uint8_t float_params_len = sizeof(periodic_float_params)/sizeof(periodic_float_params[0]);
 uint8_t U8_params_len = sizeof(periodic_U8_params)/sizeof(periodic_U8_params[0]);
 
@@ -54,6 +56,7 @@ void update_periodic_CAN_params(){
 	update_sdc_params();
 	update_display_fault_status();
 	update_inverter_motor_temps();
+	//update_vector_nav_params();
 
 	for(int i = 0; i < float_params_len; i++){
 		update_and_queue_param_float(periodic_float_params[i], periodic_float_params[i]->data);
@@ -132,5 +135,47 @@ void update_sdc_params(){
 	sdcStatus4.data = HAL_GPIO_ReadPin(SDC2_MCU_GPIO_Port, SDC2_MCU_Pin);
 	update_and_queue_param_u8(&sdcStatus3, sdcStatus3.data);
 	update_and_queue_param_u8(&sdcStatus4, sdcStatus4.data);
+}
+
+void update_and_queue_vectornav_params(void)
+{
+    // ---- Group 75: INS + Pos/Vel ----
+    update_and_queue_param_u16(&fvcINS_status, vn300_75.INS_status);
+
+    // doubles in struct → float in telemetry (explicit cast)
+    update_and_queue_param_float(&fvcLatitude,   (float)vn300_75.Latitude);
+    update_and_queue_param_float(&fvcLongitude,  (float)vn300_75.Longitude);
+    update_and_queue_param_float(&fvcAltitude,   (float)vn300_75.Altitude);
+
+    update_and_queue_param_float(&fvcVelBodyX,   vn300_75.VelBodyX);
+    update_and_queue_param_float(&fvcVelBodyY,   vn300_75.VelBodyY);
+    update_and_queue_param_float(&fvcVelBodyZ,   vn300_75.VelBodyZ);
+
+    // ---- Group 76: Attitude + Linear Accel ----
+    update_and_queue_param_float(&fvcYaw,        vn300_76.Yaw);
+    update_and_queue_param_float(&fvcPitch,      vn300_76.Pitch);
+    update_and_queue_param_float(&fvcRoll,       vn300_76.Roll);
+
+    update_and_queue_param_float(&fvcQuatX,      vn300_76.QuatX);
+    update_and_queue_param_float(&fvcQuatY,      vn300_76.QuatY);
+    update_and_queue_param_float(&fvcQuatZ,      vn300_76.QuatZ);
+    update_and_queue_param_float(&fvcQuatS,      vn300_76.QuatS);
+
+    update_and_queue_param_float(&fvcLinBodyAccX, vn300_76.LinBodyAccX);
+    update_and_queue_param_float(&fvcLinBodyAccY, vn300_76.LinBodyAccY);
+    update_and_queue_param_float(&fvcLinBodyAccZ, vn300_76.LinBodyAccZ);
+
+    // ---- Group 77: Time + Gyro ----
+    update_and_queue_param_u8 (&fvcTimeUtcY,     vn300_77.TimeUtcY);
+    update_and_queue_param_u8 (&fvcTimeUtcMonth, vn300_77.TimeUtcMonth);
+    update_and_queue_param_u8 (&fvcTimeUtcD,     vn300_77.TimeUtcD);
+    update_and_queue_param_u8 (&fvcTimeUtcH,     vn300_77.TimeUtcH);
+    update_and_queue_param_u8 (&fvcTimeUtcMin,   vn300_77.TimeUtcMin);
+    update_and_queue_param_u8 (&fvcTimeUtcS,     vn300_77.TimeUtcS);
+    update_and_queue_param_u16(&fvcTimeUtcF,     vn300_77.TimeUtcF);
+
+    update_and_queue_param_float(&fvcGyroBodyX,  vn300_77.GyroBodyX);
+    update_and_queue_param_float(&fvcGyroBodyY,  vn300_77.GyroBodyY);
+    update_and_queue_param_float(&fvcGyroBodyZ,  vn300_77.GyroBodyZ);
 }
 

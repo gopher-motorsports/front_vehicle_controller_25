@@ -120,7 +120,6 @@ buckets:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
-            
             fvcControllerTemp_C:
                 ADC: NON_ADC
                 sensor: NON_ADC
@@ -131,3 +130,117 @@ buckets:
                 samples_buffered: 1
             
                 
+    vector_nav_parameters:
+        frequency_hz: 40
+        parameters:
+            fvcINS_status:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcLatitude:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcLongitude:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcAltitude:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcVelBodyX:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcVelBodyY:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcVelBodyZ:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+
+            fvcYaw:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcPitch:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcRoll:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcQuatX:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcQuatY:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcQuatZ:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcQuatS:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcLinBodyAccX:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcLinBodyAccY:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcLinBodyAccZ:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+
+            fvcTimeUtcY:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcTimeUtcMonth:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcTimeUtcD:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcTimeUtcH:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcTimeUtcMin:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcTimeUtcS:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcTimeUtcF:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcGyroBodyX:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcGyroBodyY:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+            fvcGyroBodyZ:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
+

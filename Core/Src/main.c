@@ -25,6 +25,8 @@
 #include "gopher_sense.h"
 #include "FVC.h"
 #include "pulse_sensor.h"
+#include "vector_nav.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,10 +67,10 @@ TIM_HandleTypeDef htim10;
 TIM_HandleTypeDef htim11;
 DMA_HandleTypeDef hdma_tim2_ch1;
 DMA_HandleTypeDef hdma_tim2_ch2_ch4;
-DMA_HandleTypeDef hdma_tim2_up_ch3;
 
-UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart1;
+UART_HandleTypeDef huart3;
+DMA_HandleTypeDef hdma_usart3_rx;
 
 osThreadId main_taskHandle;
 osThreadId buffer_handlingHandle;
@@ -88,13 +90,13 @@ static void MX_TIM2_Init(void);
 static void MX_CAN1_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM3_Init(void);
-static void MX_UART4_Init(void);
 static void MX_TIM11_Init(void);
+static void MX_USART3_UART_Init(void);
 void task_MainTask(void const * argument);
 void task_BufferHandling(void const * argument);
 
 /* USER CODE BEGIN PFP */
-
+int my_int;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -141,10 +143,31 @@ int main(void)
   MX_CAN1_Init();
   MX_TIM1_Init();
   MX_TIM3_Init();
-  MX_UART4_Init();
   MX_TIM11_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+  //vn300_cmd_init(&huart3);
+  //const int BINARY_OUTPUT_RATE_DIVIDER = 10;  // or whatever value your sketch used
 
+  // Register 75 – Async Output 1 Configuration
+//  vn300_send_cmdf("VNWRG,75,2,%d,20,000B", BINARY_OUTPUT_RATE_DIVIDER);
+
+  // Register 76 – Async Output 2 Configuration
+//  vn300_send_cmdf("VNWRG,76,2,%d,10,0046", BINARY_OUTPUT_RATE_DIVIDER);
+
+  // Register 77 – Async Output 3 Configuration
+//  vn300_send_cmdf("VNWRG,77,2,%d,06,0040,0400", BINARY_OUTPUT_RATE_DIVIDER);
+
+  // Register 06 – Async Mode Control (set to 0 = start asynchronous output)
+//  vn300_send_cmdf("VNWRG,06,0");
+
+  // Save configuration to nonvolatile memory
+//  vn300_send_cmdf("VNWNV");
+
+  // Software reset so config takes effect
+//  vn300_send_cmdf("VNRST");
+  vn300_start_rx(&huart3);
+  init_vnav_uart(&huart1, &huart3);
   init_can(&hcan1, GCAN0);
   init_can(&hcan2, GCAN1);
   gsense_init(&hcan1, &hadc1, NULL, NULL, &htim10, Gsense_GPIO_Port, Gsense_Pin);
@@ -192,7 +215,7 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of main_task */
-  osThreadDef(main_task, task_MainTask, osPriorityNormal, 0, 1024);
+  osThreadDef(main_task, task_MainTask, osPriorityNormal, 0, 2048);
   main_taskHandle = osThreadCreate(osThread(main_task), NULL);
 
   /* definition and creation of buffer_handling */
@@ -235,11 +258,12 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 12;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = 8;
   RCC_OscInitStruct.PLL.PLLN = 160;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 2;
@@ -564,10 +588,6 @@ static void MX_TIM2_Init(void)
   {
     Error_Handler();
   }
-  if (HAL_TIM_IC_ConfigChannel(&htim2, &sConfigIC, TIM_CHANNEL_3) != HAL_OK)
-  {
-    Error_Handler();
-  }
   /* USER CODE BEGIN TIM2_Init 2 */
 
   /* USER CODE END TIM2_Init 2 */
@@ -682,39 +702,6 @@ static void MX_TIM11_Init(void)
 }
 
 /**
-  * @brief UART4 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_UART4_Init(void)
-{
-
-  /* USER CODE BEGIN UART4_Init 0 */
-
-  /* USER CODE END UART4_Init 0 */
-
-  /* USER CODE BEGIN UART4_Init 1 */
-
-  /* USER CODE END UART4_Init 1 */
-  huart4.Instance = UART4;
-  huart4.Init.BaudRate = 115200;
-  huart4.Init.WordLength = UART_WORDLENGTH_8B;
-  huart4.Init.StopBits = UART_STOPBITS_1;
-  huart4.Init.Parity = UART_PARITY_NONE;
-  huart4.Init.Mode = UART_MODE_TX_RX;
-  huart4.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart4.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart4) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN UART4_Init 2 */
-
-  /* USER CODE END UART4_Init 2 */
-
-}
-
-/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -744,6 +731,39 @@ static void MX_USART1_UART_Init(void)
   /* USER CODE BEGIN USART1_Init 2 */
 
   /* USER CODE END USART1_Init 2 */
+
+}
+
+/**
+  * @brief USART3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART3_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART3_Init 0 */
+
+  /* USER CODE END USART3_Init 0 */
+
+  /* USER CODE BEGIN USART3_Init 1 */
+
+  /* USER CODE END USART3_Init 1 */
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 115200;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_NONE;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART3_Init 2 */
+
+  /* USER CODE END USART3_Init 2 */
 
 }
 

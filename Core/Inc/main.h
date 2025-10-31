@@ -75,8 +75,6 @@ void Error_Handler(void);
 #define SpeedSen1_GPIO_Port GPIOA
 #define SpeedSen2_Pin GPIO_PIN_1
 #define SpeedSen2_GPIO_Port GPIOA
-#define SpeedSen3_Pin GPIO_PIN_2
-#define SpeedSen3_GPIO_Port GPIOA
 #define Brake_Temp_FR_Pin GPIO_PIN_3
 #define Brake_Temp_FR_GPIO_Port GPIOA
 #define Brake_Temp_FL_Pin GPIO_PIN_4
@@ -101,10 +99,6 @@ void Error_Handler(void);
 #define SDC1_MCU_GPIO_Port GPIOA
 #define HARDFAULT_LED_Pin GPIO_PIN_15
 #define HARDFAULT_LED_GPIO_Port GPIOA
-#define VecNav_TX_Pin GPIO_PIN_10
-#define VecNav_TX_GPIO_Port GPIOC
-#define VecNav_RX_Pin GPIO_PIN_11
-#define VecNav_RX_GPIO_Port GPIOC
 #define Gsense_Pin GPIO_PIN_12
 #define Gsense_GPIO_Port GPIOC
 #define HBeat_Pin GPIO_PIN_2

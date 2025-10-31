@@ -7,7 +7,7 @@
 
 #include <FVC.h>
 #include <stdlib.h>
-
+#include "vector_nav.h"
 //GopherLibraries
 #include "gopher_sense.h"
 #include "GopherCAN.h"
@@ -23,6 +23,8 @@
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
 
+UART_HandleTypeDef *uartDEBUG;
+UART_HandleTypeDef *uartNAV;
 //CAN_HandleTypeDef* hcan;
 
 uint32_t preDriveTimer_ms = 0;
@@ -50,6 +52,10 @@ LAUNCH_CONTROL_STATES_t launch_control_state = LAUNCH_CONTROL_DISABLED;
 
 // Initialization code goes here
 
+void init_vnav_uart(UART_HandleTypeDef *huart_debug, UART_HandleTypeDef *huart_nav){
+	uartDEBUG = huart_debug;
+	uartNAV = huart_nav;
+}
 //void init(CAN_HandleTypeDef* hcan_ptr) {
 //	hcan = hcan_ptr;
 //	//init_can(&hcan1, GCAN0);
