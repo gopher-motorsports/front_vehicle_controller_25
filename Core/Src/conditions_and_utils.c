@@ -24,11 +24,11 @@ void LED_task(){
 //Get Desired Current Limit
 int get_max_current_limit(){
 	if(driveSpeedMode_state.data == SLOW_MODE){
-		pittoTubePressure_psi.data = 100;
-		return 200; // 200 Apk,  the speed
+//		pittoTubePressure_psi.data = 100;
+		return 390; // 200 Apk,  the speed
 	}
 	else{
-		pittoTubePressure_psi.data = 0;
+//		pittoTubePressure_psi.data = 0;
 		return 390; // 550 Apk
 	}
 }

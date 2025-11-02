@@ -11,10 +11,18 @@
 #include "sensor_and_CAN.h"
 #include "fvc_software_faults.h"
 #include "vector_nav.h"
+#include <math.h>
 //Always Periodic --> pedalPosition1 %, pedalPosition2 %, wheel speed front left, wheel speed front right, out of range --> apps1, apps2, brake front, cor
 //Inverter State Machine Periodic --> desired_current, max_current, enable state, vehicle state
 //Change based --> vcuPedalPosition1Fault_state, vcuPedalPosition2Fault_state, vcuBrakePressureSensorFault_state, vcuTractiveSystemCurrentSensorFault_state
 // vcuPedalPositionCorrelationFault_state, vcuPedalPositionBrakingFault_state
+#define YAW_RATE_FAULT_THRESH 0.000000001f
+#define VNAV_FAULT_TIME_OUT   2000
+#define VNAV_SEND_TIME		  25
+#define PEDAL_SEND_TIME		  10
+#define TEMP_SEND_TIME		  500
+
+boolean power_cycle_needed = FALSE;
 
 FLOAT_CAN_STRUCT *periodic_float_params[] = {
 	&pedalPosition1_percent,
@@ -93,6 +101,12 @@ void update_pedal_percent(){
 
 	float pedal_pos2_percent = 100.0*(pedalPosition2_mm.data-APPS_2_MIN_CURRENT_POS_mm)/APPS_2_TOTAL_TRAVEL_mm;
 	pedalPosition2_percent.data = clamp(pedal_pos2_percent, 0.0, 100.0);
+
+	static U32 last_pedal_send = 0;
+	if(HAL_GetTick() - last_pedal_send >= PEDAL_SEND_TIME) {
+		send_group(0x102);
+		last_pedal_send = HAL_GetTick();
+	}
 }
 
 void update_rpm(){
@@ -103,8 +117,14 @@ void update_rpm(){
 }
 
 void update_inverter_motor_temps(){
-	update_and_queue_param_float(&fvcControllerTemp_C, ControllerTemp_C.data);
-	update_and_queue_param_float(&fvcMotorTemp_C, motorTemp_C.data);
+	fvcControllerTemp_C.data = ControllerTemp_C.data;
+	fvcMotorTemp_C.data = motorTemp_C.data;
+
+	static U32 last_temp_send = 0;
+	if(HAL_GetTick() - last_temp_send >= TEMP_SEND_TIME) {
+		send_group(0x108);
+		last_temp_send = HAL_GetTick();
+	}
 }
 
 float clamp(float data, float min, float max){
@@ -140,42 +160,92 @@ void update_sdc_params(){
 void update_vector_nav_params(void)
 {
     // ---- Group 75: INS + Pos/Vel ----
-    update_and_queue_param_u16(&fvcINS_status, vn300_75.INS_status);
+    // update_and_queue_param_u16(&fvcINS_status, vn300_75.INS_status);
 
     // doubles in struct → float in telemetry (explicit cast)
-    update_and_queue_param_float(&fvcLatitude,   (float)vn300_75.Latitude);
-    update_and_queue_param_float(&fvcLongitude,  (float)vn300_75.Longitude);
-    update_and_queue_param_float(&fvcAltitude,   (float)vn300_75.Altitude);
+//    update_and_queue_param_float(&fvcLatitude,   (float)vn300_75.Latitude);
+//    update_and_queue_param_float(&fvcLongitude,  (float)vn300_75.Longitude);
+//    update_and_queue_param_float(&fvcAltitude,   (float)vn300_75.Altitude);
 
-    update_and_queue_param_float(&fvcVelBodyX,   vn300_75.VelBodyX);
-    update_and_queue_param_float(&fvcVelBodyY,   vn300_75.VelBodyY);
-    update_and_queue_param_float(&fvcVelBodyZ,   vn300_75.VelBodyZ);
+//    update_and_queue_param_float(&fvcVelBodyX,   vn300_75.VelBodyX);
+//    update_and_queue_param_float(&fvcVelBodyY,   vn300_75.VelBodyY);
+//    update_and_queue_param_float(&fvcVelBodyZ,   vn300_75.VelBodyZ);
 
     // ---- Group 76: Attitude + Linear Accel ----
-    update_and_queue_param_float(&fvcYaw,        vn300_76.Yaw);
-    update_and_queue_param_float(&fvcPitch,      vn300_76.Pitch);
-    update_and_queue_param_float(&fvcRoll,       vn300_76.Roll);
+//    update_and_queue_param_float(&fvcYaw,        vn300_76.Yaw);
+//    update_and_queue_param_float(&fvcPitch,      vn300_76.Pitch);
+//    update_and_queue_param_float(&fvcRoll,       vn300_76.Roll);
 
-    update_and_queue_param_float(&fvcQuatX,      vn300_76.QuatX);
-    update_and_queue_param_float(&fvcQuatY,      vn300_76.QuatY);
-    update_and_queue_param_float(&fvcQuatZ,      vn300_76.QuatZ);
-    update_and_queue_param_float(&fvcQuatS,      vn300_76.QuatS);
+//    update_and_queue_param_float(&fvcQuatX,      vn300_76.QuatX);
+//    update_and_queue_param_float(&fvcQuatY,      vn300_76.QuatY);
+//    update_and_queue_param_float(&fvcQuatZ,      vn300_76.QuatZ);
+//    update_and_queue_param_float(&fvcQuatS,      vn300_76.QuatS);
 
-    update_and_queue_param_float(&fvcLinBodyAccX, vn300_76.LinBodyAccX);
-    update_and_queue_param_float(&fvcLinBodyAccY, vn300_76.LinBodyAccY);
-    update_and_queue_param_float(&fvcLinBodyAccZ, vn300_76.LinBodyAccZ);
+//    update_and_queue_param_float(&fvcLinBodyAccX, vn300_76.LinBodyAccX);
+//    update_and_queue_param_float(&fvcLinBodyAccY, vn300_76.LinBodyAccY);
+//    update_and_queue_param_float(&fvcLinBodyAccZ, vn300_76.LinBodyAccZ);
 
     // ---- Group 77: Time + Gyro ----
-    update_and_queue_param_u8 (&fvcTimeUtcY,     vn300_77.TimeUtcY);
-    update_and_queue_param_u8 (&fvcTimeUtcMonth, vn300_77.TimeUtcMonth);
-    update_and_queue_param_u8 (&fvcTimeUtcD,     vn300_77.TimeUtcD);
-    update_and_queue_param_u8 (&fvcTimeUtcH,     vn300_77.TimeUtcH);
-    update_and_queue_param_u8 (&fvcTimeUtcMin,   vn300_77.TimeUtcMin);
-    update_and_queue_param_u8 (&fvcTimeUtcS,     vn300_77.TimeUtcS);
-    update_and_queue_param_u16(&fvcTimeUtcF,     vn300_77.TimeUtcF);
+//    update_and_queue_param_u8 (&fvcTimeUtcY,     vn300_77.TimeUtcY);
+//    update_and_queue_param_u8 (&fvcTimeUtcMonth, vn300_77.TimeUtcMonth);
+//    update_and_queue_param_u8 (&fvcTimeUtcD,     vn300_77.TimeUtcD);
+//    update_and_queue_param_u8 (&fvcTimeUtcH,     vn300_77.TimeUtcH);
+//    update_and_queue_param_u8 (&fvcTimeUtcMin,   vn300_77.TimeUtcMin);
+//    update_and_queue_param_u8 (&fvcTimeUtcS,     vn300_77.TimeUtcS);
+//    update_and_queue_param_u16(&fvcTimeUtcF,     vn300_77.TimeUtcF);
 
-    update_and_queue_param_float(&fvcGyroBodyX,  vn300_77.GyroBodyX);
-    update_and_queue_param_float(&fvcGyroBodyY,  vn300_77.GyroBodyY);
-    update_and_queue_param_float(&fvcGyroBodyZ,  vn300_77.GyroBodyZ);
+//    update_and_queue_param_float(&fvcGyroBodyX,  vn300_77.GyroBodyX);
+//    update_and_queue_param_float(&fvcGyroBodyY,  vn300_77.GyroBodyY);
+//    update_and_queue_param_float(&fvcGyroBodyZ,  vn300_77.GyroBodyZ);
+
+    if(fabs(vn300_76.Yaw) < YAW_RATE_FAULT_THRESH && (HAL_GetTick() >= VNAV_FAULT_TIME_OUT)){
+    	fvcPowerCycleNeeded.data = TRUE;
+    	pittoTubePressure_psi.data = 100;
+    }
+   else{
+	   fvcPowerCycleNeeded.data = FALSE;
+	   pittoTubePressure_psi.data = 0;
+   }
+
+	static U32 last_vnav_send = 0;
+	if(HAL_GetTick() - last_vnav_send >= VNAV_SEND_TIME) {
+		fvcYaw.data        = vn300_76.Yaw;
+		fvcPitch.data      = vn300_76.Pitch;
+		fvcRoll.data       = vn300_76.Roll;
+
+		fvcQuatX.data      = vn300_76.QuatX;
+		fvcQuatY.data      = vn300_76.QuatY;
+		fvcQuatZ.data      = vn300_76.QuatZ;
+		fvcQuatS.data      = vn300_76.QuatS;
+
+		fvcLatitude.data   = (float)vn300_75.Latitude;
+		fvcLongitude.data  = (float)vn300_75.Longitude;
+		fvcAltitude.data   = (float)vn300_75.Altitude;
+
+		fvcVelBodyX.data   = vn300_75.VelBodyX;
+		fvcVelBodyY.data   = vn300_75.VelBodyY;
+		fvcVelBodyZ.data   = vn300_75.VelBodyZ;
+
+		fvcLinBodyAccX.data = vn300_76.LinBodyAccX;
+		fvcLinBodyAccY.data = vn300_76.LinBodyAccY;
+		fvcLinBodyAccZ.data = vn300_76.LinBodyAccZ;
+
+		fvcGyroBodyX.data  = vn300_77.GyroBodyX;
+		fvcGyroBodyY.data  = vn300_77.GyroBodyY;
+		fvcGyroBodyZ.data  = vn300_77.GyroBodyZ;
+
+		send_group(0x111);
+		send_group(0x112);
+		send_group(0x113);
+		send_group(0x114);
+		send_group(0x115);
+		send_group(0x116);
+		send_group(0x117);
+		send_group(0x118);
+		send_group(0x119);
+		send_group(0x120);
+		last_vnav_send = HAL_GetTick();
+	}
+
 }
 

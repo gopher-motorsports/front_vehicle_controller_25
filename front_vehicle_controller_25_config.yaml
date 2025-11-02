@@ -243,4 +243,8 @@ buckets:
                 ADC: NON_ADC
                 sensor: NON_ADC
                 samples_buffered: 1
+            fvcPowerCycleNeeded:
+                ADC: NON_ADC
+                sensor: NON_ADC
+                samples_buffered: 1
 
