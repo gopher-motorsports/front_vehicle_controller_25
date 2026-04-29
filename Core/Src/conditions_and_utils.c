@@ -68,16 +68,16 @@ uint8_t is_vechile_faulting(){
 	}
 
 	//input fault = rear brake pressure or current sensor out of range
-	fault_tripped |= bspdInputFault_state.data;
+	// fault_tripped |= bspdInputFault_state.data;
 
-	// APPS/Brake Plausibility Fault (both pedals pushed)
-	if((brakePressureFront_psi.data > APPS_BRAKE_PRESS_THRESH_psi) && (pedalPosition1_percent.data > 25)) {
-		appsBrakeLatched_state = TRUE;
-	} else if (pedalPosition1_percent.data <= 5) {
-		appsBrakeLatched_state = FALSE;
-	}
+	// // APPS/Brake Plausibility Fault (both pedals pushed)
+	// if((brakePressureFront_psi.data > APPS_BRAKE_PRESS_THRESH_psi) && (pedalPosition1_percent.data > 25)) {
+	// 	appsBrakeLatched_state = TRUE;
+	// } else if (pedalPosition1_percent.data <= 5) {
+	// 	appsBrakeLatched_state = FALSE;
+	// }
 
-	fault_tripped |= appsBrakeLatched_state;
+	// fault_tripped |= appsBrakeLatched_state;
 
 	return fault_tripped;
 }
