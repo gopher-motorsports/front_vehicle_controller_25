@@ -108,10 +108,10 @@ void determine_current_parameters(){
 		desiredCurrent_A = 0;
 	}
 	else{
-		maxcurrentLimit_A = 500;
+		maxcurrentLimit_A = 390;
 		desiredCurrent_A = calculate_desired_current();
 	}
-	dc_currentlimit_A = calculate_dc_current_limit();
+	dc_currentlimit_A = 200;
 }
 
 void process_inverter() {

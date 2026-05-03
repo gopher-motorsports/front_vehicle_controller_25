@@ -25,7 +25,7 @@ void LED_task(){
 int get_max_current_limit(){
 	if(driveSpeedMode_state.data == SLOW_MODE){
 		pittoTubePressure_psi.data = 100;
-		return 200; // 200 Apk,  the speed
+		return 390; // 200 Apk,  the speed
 	}
 	else{
 		pittoTubePressure_psi.data = 0;
@@ -68,18 +68,18 @@ uint8_t is_vechile_faulting(){
 	}
 
 	//input fault = rear brake pressure or current sensor out of range
-	fault_tripped |= bspdInputFault_state.data;
+//	fault_tripped |= bspdInputFault_state.data;
+//
+//	// APPS/Brake Plausibility Fault (both pedals pushed)
+//	if((brakePressureFront_psi.data > APPS_BRAKE_PRESS_THRESH_psi) && (pedalPosition1_percent.data > 25)) {
+//		appsBrakeLatched_state = TRUE;
+//	} else if (pedalPosition1_percent.data <= 5) {
+//		appsBrakeLatched_state = FALSE;
+//	}
+//
+//	fault_tripped |= appsBrakeLatched_state;
 
-	// APPS/Brake Plausibility Fault (both pedals pushed)
-	if((brakePressureFront_psi.data > APPS_BRAKE_PRESS_THRESH_psi) && (pedalPosition1_percent.data > 25)) {
-		appsBrakeLatched_state = TRUE;
-	} else if (pedalPosition1_percent.data <= 5) {
-		appsBrakeLatched_state = FALSE;
-	}
-
-	fault_tripped |= appsBrakeLatched_state;
-
-	return fault_tripped;
+	return FALSE;
 }
 
 float calculate_dc_current_limit(){

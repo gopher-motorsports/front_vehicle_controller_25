@@ -75,10 +75,10 @@ SOFTWARE_FAULT Pedal_Correlation_Fault = {
 //look at 100 fault
 SOFTWARE_FAULT* TIMED_SOFTWARE_FAULTS[NUM_OF_TIMED_FAULTS] = {
     &APPS1_Range_Fault,
-    &APPS2_Range_Fault,
+//    &APPS2_Range_Fault,
 //    &BRK_PRESSURE_Range_Fault,
 //    &TS_CURRENT_Range_Fault,
-    &Pedal_Correlation_Fault
+//    &Pedal_Correlation_Fault
 };
 
 void update_struct_fault_data(){
