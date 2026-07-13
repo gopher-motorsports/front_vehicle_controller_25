@@ -34,9 +34,10 @@ int get_max_current_limit(){
 }
 
 uint8_t predrive_conditions_met(){
-	return (brakePressureFront_psi.data > PREDRIVE_BRAKE_THRESH_psi) && (PREDRIVE_BUTTON_PARAM.data == PRESSED)
-			&& (inputInverterVoltage_V.data > TS_ON_THRESHOLD_VOLTAGE_V);
-	//return (brakePressureFront_psi.data > PREDRIVE_BRAKE_THRESH_psi) && (inputInverterVoltage_V.data > TS_ON_THRESHOLD_VOLTAGE_V);
+//	return (brakePressureFront_psi.data > PREDRIVE_BRAKE_THRESH_psi) && (PREDRIVE_BUTTON_PARAM.data == PRESSED)
+//			&& (inputInverterVoltage_V.data > TS_ON_THRESHOLD_VOLTAGE_V);
+//	return (brakePressureFront_psi.data > PREDRIVE_BRAKE_THRESH_psi) && (inputInverterVoltage_V.data > TS_ON_THRESHOLD_VOLTAGE_V);
+	return (PREDRIVE_BUTTON_PARAM.data == PRESSED) && (inputInverterVoltage_V.data > TS_ON_THRESHOLD_VOLTAGE_V);
 }
 
 uint8_t fault_tripped = 0;
