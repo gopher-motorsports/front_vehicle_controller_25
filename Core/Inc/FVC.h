@@ -128,7 +128,7 @@
 #define NORMAL_MODE 0
 #define SLOW_MODE 1
 // ======================================== I/O PARAMETERS ======================================
-#define PREDRIVE_BUTTON_PARAM swButon3_state
+#define PREDRIVE_BUTTON_PARAM swButon0_state
 #define SLOW_MODE_BUTTON_THRESH 2000
 #define MOSFET_PULL_DOWN_ON (GPIO_PIN_SET)
 #define MOSFET_PULL_DOWN_OFF (GPIO_PIN_RESET)
