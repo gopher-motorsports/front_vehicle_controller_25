@@ -160,7 +160,7 @@ int main(void)
       		  MIN_SAMPLES,
       		  64
          );
-  setup_pulse_sensor_vss(
+  setup_pulse_sensor_vss( 
 			  &htim2,
 			  TIM_CHANNEL_2,
 			  CONVERSION_RATIO,

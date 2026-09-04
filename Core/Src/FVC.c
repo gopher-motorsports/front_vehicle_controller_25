@@ -11,6 +11,7 @@
 //GopherLibraries
 #include "gopher_sense.h"
 #include "GopherCAN.h"
+#include "pulse_sensor.h"
 //Suporting Files:
 #include "conditions_and_utils.h"
 #include "sensor_and_CAN.h"
@@ -58,8 +59,11 @@ LAUNCH_CONTROL_STATES_t launch_control_state = LAUNCH_CONTROL_DISABLED;
 //	init_can(hcan, GCAN0);
 //}
 float motor_temp = 0;
+int pulseSensorStatus = 0; 
 
 void main_loop() {
+	pulseSensorStatus = check_pulse_sensors();
+	//update_rpm();
 	determine_drive_mode();
 	update_periodic_CAN_params();
 	process_inverter();
