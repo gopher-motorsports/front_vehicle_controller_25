@@ -1,0 +1,34 @@
+; Exports for the MSVC build of the host test library (see fvc_sil.py).
+; GCC and clang export these by default and ignore this file.
+LIBRARY fvc_host
+EXPORTS
+    stub_init
+    stub_set_time
+    stub_set_inputs
+    stub_get_telemetry
+    gds_default_config
+    gds_init
+    gds_select_mission
+    gds_go
+    gds_stop
+    gds_uart_rx_byte
+    gds_tick
+    gds_command
+    gds_state
+    gds_fault
+    gds_model
+    gds_debug_outputs
+    gds_debug_ctrl
+    fsae_policy_init
+    fsae_policy_forward
+    fsae_policy_sizeof
+    fsae_ctrl_init
+    fsae_ctrl_start
+    fsae_ctrl_perception
+    fsae_ctrl_step
+    fsae_ctrl_sizeof
+    fsae_msg_decode
+    fsae_msg_stream_init
+    fsae_msg_stream_push
+    fsae_crc16
+    fsae_crc32

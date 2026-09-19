@@ -1,0 +1,8 @@
+X_FLOAT(vnavGyroBodyZ) X_FLOAT(vnavVelBodyX) X_FLOAT(vnavVelBodyY) X_U16(vnavINS_status)
+X_FLOAT(longitudinalAccel_G)
+X_FLOAT(fvcWheelSpeedFrontLeft_m_per_s) X_FLOAT(fvcWheelSpeedFrontRight_m_per_s)
+X_FLOAT(fvcWheelSpeedRearLeft_m_per_s) X_FLOAT(fvcWheelSpeedRearRight_m_per_s)
+X_FLOAT(dsSteerCmd_deg) X_FLOAT(dsDriveTorqueCmd_Nm) X_FLOAT(dsBrakeTorqueFrontCmd_Nm)
+X_FLOAT(dsBrakeTorqueRearCmd_Nm) X_U8(dsState_state) X_U8(dsFault_state) X_U8(dsCrossings_state)
+X_U8(dsFlags_state) X_U8(dsConesUsed_state) X_U8(dsModelEvent_state) X_U16(dsPerceptionAge_ms)
+X_FLOAT(dsVxEst_mps) X_FLOAT(dsVyEst_mps) X_FLOAT(dsYawRate_degps) X_U32(dsModelCreated_unix)

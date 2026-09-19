@@ -1,0 +1,22 @@
+{
+  "event": "autocross",
+  "sensor": "simple",
+  "action_mode": "absolute",
+  "normalize": true,
+  "reward_scale": 0.05,
+  "gamma": 0.999,
+  "learning_rate": 0.0003,
+  "sde": false,
+  "log_std_init": 0.0,
+  "grip_scale": null,
+  "target_kl": null,
+  "tire_npz": null,
+  "resumed_from": null,
+  "seed": 1,
+  "launch_assist_speed": 3.0,
+  "best_at_steps": 200000,
+  "eval_completion": 0.0,
+  "eval_corrected_time": null,
+  "eval_distance_fraction": 0.004035085143198666,
+  "eval_episodes": 5
+}

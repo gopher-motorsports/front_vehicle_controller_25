@@ -1,0 +1,17 @@
+{
+  "event": "autocross",
+  "sensor": "simple",
+  "action_mode": "absolute",
+  "normalize": true,
+  "reward_scale": 0.05,
+  "gamma": 0.999,
+  "learning_rate": 5e-05,
+  "sde": false,
+  "log_std_init": 0.0,
+  "grip_scale": null,
+  "target_kl": 0.003,
+  "tire_npz": null,
+  "resumed_from": "models/autocross_combo_best.zip",
+  "seed": 2,
+  "launch_assist_speed": 3.0
+}

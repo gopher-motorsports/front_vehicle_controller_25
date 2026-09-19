@@ -1,0 +1,8 @@
+# The README already referenced `pip install -r requirements.txt` but the file
+# was never in the repo. Pinned loosely -- tighten before a long training run.
+numpy>=1.24
+scipy>=1.10
+gymnasium>=0.29
+matplotlib>=3.7
+stable-baselines3>=2.2   # only needed for train.py and `evaluate.py --model`
+tensorboard              # optional; train.py detects it and logs if present
