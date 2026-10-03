@@ -35,5 +35,10 @@
 			<type>2</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Gopher_Sense</locationURI>
 		</link>
+		<link>
+			<name>Core/gophercan-lib</name>
+			<type>2</type>
+			<location>C:/Users/andre/STM32CubeIDE/FSAE/gophercan-lib</location>
+		</link>
 	</linkedResources>
 </projectDescription>
