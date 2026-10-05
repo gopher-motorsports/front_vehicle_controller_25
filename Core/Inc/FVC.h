@@ -47,7 +47,7 @@
 // =============================================================================================
 
 // ================================== READY TO DRIVE PARAMETERS =================================
-#define PREDRIVE_BRAKE_THRESH_psi  2  // The minimum brake pressure to enter the driving state
+#define PREDRIVE_BRAKE_THRESH_psi  -0.5  // The minimum brake pressure to enter the driving state
 #define PREDRIVE_BUTTON_PRESSED    1    // The value of the button parameter when pressed
 #define PREDRIVE_TIME_ms           3000 // The length of predrive in ms
 #define RTD_BUTTON_PUSHED          (GPIO_PIN_RESET)
