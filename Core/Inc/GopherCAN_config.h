@@ -4,8 +4,8 @@
 #define THIS_MODULE_ID FVC_ID
 
 // RX and TX buffer sizes (bytes)
-#define RX_BUFFER_SIZE 32
-#define TX_BUFFER_SIZE 32
+#define RX_BUFFER_SIZE 255
+#define TX_BUFFER_SIZE 128
 
 // ID filters
 //#define FILTER_ACCEPT_ALL // accept all messages

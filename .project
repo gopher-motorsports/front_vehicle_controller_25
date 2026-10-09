@@ -38,7 +38,7 @@
 		<link>
 			<name>Core/gophercan-lib</name>
 			<type>2</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/gophercan-lib</locationURI>
+			<location>C:/Users/andre/STM32CubeIDE/FSAE/gophercan-lib</location>
 		</link>
 	</linkedResources>
 </projectDescription>
