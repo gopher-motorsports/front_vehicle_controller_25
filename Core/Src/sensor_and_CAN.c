@@ -63,6 +63,12 @@ void update_periodic_CAN_params(){
 		update_and_queue_param_u8(periodic_U8_params[i], periodic_U8_params[i]->data);
 	}
 
+	update_and_send_voltage();
+}
+
+void update_and_send_voltage(){
+	fvcInputInverterVoltage_V.data = inputInverterVoltage_V.data;
+	send_group(0x102);
 }
 
 void update_fault_state(U8_CAN_STRUCT *param, uint8_t state, uint8_t last_state){

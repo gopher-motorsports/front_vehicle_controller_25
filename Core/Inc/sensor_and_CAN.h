@@ -17,4 +17,5 @@ float clamp(float data, float min, float max);
 void update_display_fault_status();
 void update_sdc_params();
 void update_inverter_motor_temps();
+void update_and_send_voltage();
 #endif /* INC_SENSOR_AND_CAN_H_ */
